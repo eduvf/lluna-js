@@ -1,7 +1,7 @@
 // NOTE: Shortcuts cannot be or start with "-."
 // They should use only ASCII punctuation
-// except for quotes ("'), brackets (()[]{})
-// comma (,), semi-colon (;) and grave (`)
+// and cannot use quotes ("'), brackets (()[]{})
+// comma (,), semi-colon (;) or grave (`)
 
 export const SHORTCUTS = {
     // General purpose

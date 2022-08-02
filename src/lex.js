@@ -61,7 +61,7 @@ export function lex(s) {
         if (c === ',') {
             // , comments
             i++;
-            while ((i < l) && (c != '\n')) {
+            while ((i < l) && (c !== '\n')) {
                 i++;
             }
         } else if (' \t'.includes(c)) {
@@ -84,7 +84,7 @@ export function lex(s) {
             // string
             i++; // opening quote
             let start = i;
-            while ((i < l) && !((s[i-1] != '\\') && (s[i] == c))) {
+            while ((i < l) && !((s[i-1] !== '\\') && (s[i] === c))) {
                 // while i < l and s[i] is not a non-escaped quote
                 if (s[i] === '\n') {line++}
                 i++;
