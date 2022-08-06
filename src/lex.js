@@ -1,6 +1,6 @@
 // lex.js - Lexer
 
-import {SHORTCUTS} from './shortcuts.js';
+import { SHORTCUTS } from './shortcuts.js';
 
 const NUM = '0123456789-.';
 const ABC = 'abcdefghijklmnopqrstuvwxyz_';
@@ -8,22 +8,24 @@ const PUN = '!#$%&*+-./:<=>?@^_|~';
 const SYM = NUM + ABC + PUN;
 
 function _check_num(s, line) {
-    let neg = (s.charAt(0) === '-') ? true : false;
+    let neg = s.charAt(0) === '-' ? true : false;
     let dot = false;
     let int = '';
     let mant = '';
 
-    for (let i = (neg) ? 1 : 0; i < s.length; i++) {
+    for (let i = neg ? 1 : 0; i < s.length; i++) {
         if ('0123456789'.includes(s[i])) {
             if (!dot) {
                 int += s[i];
             } else {
                 mant += s[i];
             }
-        } else if ((s[i] === '.') && !dot) {
+        } else if (s[i] === '.' && !dot) {
             dot = true;
         } else {
-            console.error('Couldn\'t understand number "'+s+'" at line '+line);
+            console.error(
+                'Couldn\'t understand number "' + s + '" at line ' + line
+            );
         }
     }
     return Number(s);
@@ -33,18 +35,22 @@ function _check_key(s, line) {
     if (PUN.includes(s.charAt(0))) {
         for (let i = 1; i < s.length; i++) {
             if (!PUN.includes(s[i])) {
-                console.error('Invalid keyword shortcut "'+s+'" at line '+line);
+                console.error(
+                    'Invalid keyword shortcut "' + s + '" at line ' + line
+                );
             }
         }
         if (s in SHORTCUTS) {
             return SHORTCUTS[s];
         } else {
-            console.error('Couldn\'t match shortcut "'+s+'" at line '+line);
+            console.error(
+                'Couldn\'t match shortcut "' + s + '" at line ' + line
+            );
         }
     } else if (ABC.includes(s.charAt(0))) {
         return s;
     } else {
-        console.error('Couldn\'t understand "'+s+'" at line '+line);
+        console.error('Couldn\'t understand "' + s + '" at line ' + line);
     }
 }
 
@@ -61,7 +67,7 @@ export function lex(s) {
         if (c === ',') {
             // , comments
             i++;
-            while ((i < l) && (c !== '\n')) {
+            while (i < l && c !== '\n') {
                 i++;
             }
         } else if (' \t'.includes(c)) {
@@ -84,9 +90,11 @@ export function lex(s) {
             // string
             i++; // opening quote
             let start = i;
-            while ((i < l) && !((s[i-1] !== '\\') && (s[i] === c))) {
+            while (i < l && !(s[i - 1] !== '\\' && s[i] === c)) {
                 // while i < l and s[i] is not a non-escaped quote
-                if (s[i] === '\n') {line++}
+                if (s[i] === '\n') {
+                    line++;
+                }
                 i++;
             }
             tokens.push(['s', s.slice(start, i)]);
@@ -95,16 +103,18 @@ export function lex(s) {
             // keyword or number
             let start = i;
             i++;
-            while ((i < l) && SYM.includes(s[i])) {
+            while (i < l && SYM.includes(s[i])) {
                 i++;
             }
             let str = s.slice(start, i);
             let str0 = str.charAt(0);
-            let str1 = (str.length > 1) ? str.charAt(1) : null;
+            let str1 = str.length > 1 ? str.charAt(1) : null;
 
-            if (((str0 === '-') && ('0123456789.'.includes(str1))) || // ex: -.5
-                ((str0 === '.') && ('0123456789'.includes(str1))) || // ex: .5
-                ('0123456789'.includes(str0))) {
+            if (
+                (str0 === '-' && '0123456789.'.includes(str1)) || // ex: -.5
+                (str0 === '.' && '0123456789'.includes(str1)) || // ex: .5
+                '0123456789'.includes(str0)
+            ) {
                 // number ex: 1 .5 -10 -.25
                 let n = _check_num(str, line);
                 tokens.push(['n', n]);
@@ -115,7 +125,7 @@ export function lex(s) {
         } else {
             // ignore illegal characters and print a warning
             i++;
-            console.warn('Illegal character "'+c+'" at line '+line);
+            console.warn('Illegal character "' + c + '" at line ' + line);
         }
     }
     return tokens;
