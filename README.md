@@ -18,7 +18,11 @@ however, since it’s JavaScript, you can try this implementation of lluna lang 
 
 - [x] lex & parse
 
-- [ ] eval
+- [ ] basic vm
+
+- [ ] eval (ast -> bytecode)
+
+- [ ] eval (bytecode -> vm)
 
 - [ ] basic functions
 
