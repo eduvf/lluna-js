@@ -16,6 +16,18 @@ let test = `
 
 `;
 
+let test2 = `
+~fact(n)(
+    : r 1
+    : i 1
+    @ (< i (+ n 1))(
+        : r (* r i)
+        : i (+ i 1)
+    )
+    r
+)
+`;
+
 console.log(JSON.stringify(
     parse(lex('(;' + test + ')'))
 ));

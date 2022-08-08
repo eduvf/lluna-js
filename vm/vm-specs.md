@@ -41,39 +41,29 @@ chars use 8 bits of information:
 
 ## registers
 
-- x
-
-- y
-
-- z
-
 - ip (instruction pointer)
 
 - sp (stack pointer)
 
+- ac (accumulator) → A
+
 ## instructions
 
-arguments can be atoms or registers
-
-| #   | opcode | description                                       |
-| ---:|:------:|:------------------------------------------------- |
-| 0   | ht     | Halt execution                                    |
-| 1   | sx V   | Set value (V) to X                                |
-| 2   | sy V   | Set value (V) to Y                                |
-| 3   | sz V   | Set value (V) to Z                                |
-| 4   | op O   | Arithmetic/Logic operation (O), result in X       |
-| 5   | jp O   | Jump by offset (O) if Z == 0                      |
-| 6   | st I   | Store X with index (I) on the current stack frame |
-| 7   | ld I   | Load X from index (I) [^1]                        |
-| 8   | cl O   | Call subroutine at offset (O) [^2]                |
-| 9   | rt     | Return from subroutine (only X & Y restore state) |
-| A   | -      |                                                   |
-| B   | -      |                                                   |
-| C   | -      |                                                   |
-| D   | -      |                                                   |
-| E   | -      |                                                   |
-| F   | -      |                                                   |
-
-[^1]: starting on the current stack frame and going deeper in the stack if no reference is found
-
-[^2]: the state of the registers X & Y is stored in the current stack frame before the call
+| #   | opcode | args  | description                                                |
+| ---:|:------:|:-----:|:---------------------------------------------------------- |
+| 0   | ht     | -     | Halt execution                                             |
+| 1   | st     | x y   | Set value X to index Y                                     |
+| 2   | op     | x y z | Perform X(Y, Z), result in A                               |
+| 3   | jp     | x     | Jump to instruction X                                      |
+| 4   | cl     | x y   | Call subroutine at instruction X with argument Y           |
+| 5   | rt     | x     | Return from subroutine and set index X to the return value |
+| 6   | lk     | x y   | Link index X to index Y (or NIL to remove a link)          |
+| 7   | -      |       |                                                            |
+| 8   |        |       |                                                            |
+| 9   |        |       |                                                            |
+| A   |        |       |                                                            |
+| B   |        |       |                                                            |
+| C   |        |       |                                                            |
+| D   |        |       |                                                            |
+| E   |        |       |                                                            |
+| F   |        |       |                                                            |
