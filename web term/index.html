@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>lluna term js</title>
+
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css"
+        />
+    </head>
+    <body>
+        <header style="display: flex; justify-content: space-between;">
+            <h1>lluna term js</h1>
+            <a href="#"><button>?</button></a>
+        </header>
+        <form id="input" style="display: flex">
+            <input type="text" id="cmd" placeholder=">_" style="flex: 1" />
+            <button type="submit">&crarr;</button>
+        </form>
+        <!-- <details>
+            <summary>multi-line input</summary>
+            <textarea id="code" placeholder="Enter your code here..."></textarea>
+        </details> -->
+        <hr />
+        <pre>
+            <code id="output"></code>
+        </pre>
+    </body>
+    <script>
+        const cmd = document.getElementById('cmd');
+        const out = document.getElementById('output');
+
+        document.getElementById('input').addEventListener('submit', (event) => {
+            event.preventDefault();
+            out.innerText = cmd.value + '\n' + out.innerText;
+        });
+    </script>
+</html>
