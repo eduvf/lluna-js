@@ -4,34 +4,34 @@
 
 basic (atoms):
 
-- `nil`
+-   `nil`
 
-- `bool` (t_ / f_)
+-   `bool` (t* / f*)
 
-- `int` (16-bit signed)
+-   `int` (16-bit signed)
 
-- `flt` (binary16, half precision)
+-   `flt` (binary16, half precision)
 
-- `char` (using llunascii)
+-   `char` (using llunascii)
 
 linked:
 
-- `list`
+-   `list`
 
-- `str` (a list of chars)
+-   `str` (a list of chars)
 
 ## llunascii (mode 0)
 
 chars use 8 bits of information:
 
-- 2 bits for the mode (00 = latin & punctuation; 01 = emoji, 10 & 11: user defined)
+-   2 bits for the mode (00 = latin & punctuation; 01 = emoji, 10 & 11: user defined)
 
-- 6 bits for the actual char
+-   6 bits for the actual char
 
 |      | 000 | 001 | 010 | 011 | 100 | 101 | 110 | 111 |
 | ---- | --- | --- | --- | --- | --- | --- | --- | --- |
 | 000x | ␣   | !   | ^   | #   | \|  | %   | &   | '   |
-| 001x | (   | )   | *   | +   | ,   | -   | .   | /   |
+| 001x | (   | )   | \*  | +   | ,   | -   | .   | /   |
 | 010x | 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   |
 | 011x | 8   | 9   | :   | ;   | <   | =   | >   | ?   |
 | 100x | @   | a   | b   | c   | d   | e   | f   | g   |
@@ -41,29 +41,23 @@ chars use 8 bits of information:
 
 ## registers
 
-- ip (instruction pointer)
+|  #  | register            |
+| :-: | :------------------ |
+| ip  | instruction pointer |
+| sp  | stack pointer       |
+| ac  | accumulator         |
 
-- sp (stack pointer)
-
-- ac (accumulator) → A
+> The **accumulator** is used both to store the result of an operation and to return a value between stack frames
 
 ## instructions
 
-| #   | opcode | args  | description                                                |
-| ---:|:------:|:-----:|:---------------------------------------------------------- |
-| 0   | ht     | -     | Halt execution                                             |
-| 1   | st     | x y   | Set value X to index Y                                     |
-| 2   | op     | x y z | Perform X(Y, Z), result in A                               |
-| 3   | jp     | x     | Jump to instruction X                                      |
-| 4   | cl     | x y   | Call subroutine at instruction X with argument Y           |
-| 5   | rt     | x     | Return from subroutine and set index X to the return value |
-| 6   | lk     | x y   | Link index X to index Y (or NIL to remove a link)          |
-| 7   | -      |       |                                                            |
-| 8   |        |       |                                                            |
-| 9   |        |       |                                                            |
-| A   |        |       |                                                            |
-| B   |        |       |                                                            |
-| C   |        |       |                                                            |
-| D   |        |       |                                                            |
-| E   |        |       |                                                            |
-| F   |        |       |                                                            |
+|   # | opcode | args  | description                                |
+| --: | :----: | :---: | :----------------------------------------- |
+|   0 |   ht   |   -   | **Halt** execution                         |
+|   1 |   st   |  x y  | **Set** value X to index Y                 |
+|   2 |   op   | x y z | Perform the **operation** X(Y, Z)          |
+|   3 |   jp   |  x y  | **Jump** to instruction X if Y != 0        |
+|   4 |   nf   |   -   | Add a **new** stack **frame**              |
+|   5 |   cl   |   x   | **Call** subroutine at instruction X       |
+|   6 |   rt   |   -   | **Return**, poping the current stack frame |
+|   7 |   -    |       |                                            |
