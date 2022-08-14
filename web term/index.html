@@ -36,6 +36,7 @@
         document.getElementById('input').addEventListener('submit', (event) => {
             event.preventDefault();
             out.innerText = cmd.value + '\n' + out.innerText;
+            cmd.value = '';
         });
     </script>
 </html>
