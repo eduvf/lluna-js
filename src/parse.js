@@ -9,7 +9,9 @@ export function parse(tk, line = 1) {
     let t = tk.shift();
     if (typeof t === 'object') {
         // atom [type, value]
-        return t;
+        return {
+            type: t[0], value: t[1]
+        };
     } else if (t === '(') {
         let expr = [];
         if (tk[0] === 'nl') {

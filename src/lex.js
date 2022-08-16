@@ -28,10 +28,12 @@ function _check_num(s, line) {
             );
         }
     }
-    return Number(s);
+    return [dot ? 'f' : 'i', Number(s)];
 }
 
 function _check_key(s, line) {
+    let keyword;
+
     if (PUN.includes(s.charAt(0))) {
         for (let i = 1; i < s.length; i++) {
             if (!PUN.includes(s[i])) {
@@ -41,17 +43,19 @@ function _check_key(s, line) {
             }
         }
         if (s in SHORTCUTS) {
-            return SHORTCUTS[s];
+            keyword = SHORTCUTS[s];
         } else {
             console.error(
                 'Couldn\'t match shortcut "' + s + '" at line ' + line
             );
         }
     } else if (ABC.includes(s.charAt(0))) {
-        return s;
+        keyword = s;
     } else {
         console.error('Couldn\'t understand "' + s + '" at line ' + line);
     }
+
+    return ['k', keyword];
 }
 
 export function lex(s) {
@@ -117,10 +121,10 @@ export function lex(s) {
             ) {
                 // number ex: 1 .5 -10 -.25
                 let n = _check_num(str, line);
-                tokens.push(['n', n]);
+                tokens.push(n);
             } else {
                 let k = _check_key(str, line);
-                tokens.push(['k', k]);
+                tokens.push(k);
             }
         } else {
             // ignore illegal characters and print a warning

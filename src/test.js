@@ -17,7 +17,7 @@ let test = `
 `;
 
 let test2 = `
-~fact(n)(
+~ fact(n)(
     : r 1
     : i 1
     @ (< i (+ n 1))(
@@ -28,6 +28,12 @@ let test2 = `
 )
 `;
 
+let test3 = `
+
+(+ 5 5)
+
+`
+
 console.log(JSON.stringify(
-    parse(lex('(;' + test + ')'))
+    parse(lex('(;' + test3 + ')'))
 ));

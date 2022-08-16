@@ -16,15 +16,15 @@ however, since it’s JavaScript, you can try this implementation of lluna lang 
 
 ## TO-DO
 
+> everything is in a preliminary state and can change anytime as I adjust the language features and functions as I go
+
 - [x] lex & parse
 
-- [ ] basic vm
+- [ ] interpreter (through JS)
 
-- [ ] eval (ast -> bytecode)
+- [ ] compile (ast -> bytecode)
 
-- [ ] eval (bytecode -> vm)
-
-- [ ] basic functions
+- [x] vm (bytecode -> magic✨) [prototype]
 
 - [ ] web interactive
 
