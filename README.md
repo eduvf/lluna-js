@@ -16,7 +16,7 @@ However, since it’s JavaScript, you can try this implementation of *Lluna lang
 
 ## TO-DO
 
-- [ ] lex (→ tokens)
+- [x] lex (→ tokens)
 
 - [ ] parse (→ AST)
 
