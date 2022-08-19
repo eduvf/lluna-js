@@ -2,3 +2,5 @@
 // vm.js - Virtual Machine
 
 export function vm(bytec) {}
+
+module.exports = { vm };
