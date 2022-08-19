@@ -1,51 +1,99 @@
 // interpret.js - Interpreter
 
+function _max_args(func_name, n_args, expect_n_args) {
+    if (n_args !== expect_n_args) {
+        console.warn(
+            'Too many or too few arguments for "'+func_name+'"\n'
+            +'Expected: '+expect_n_args+'; Given: '+n_args);
+    }
+}
+
 const _STD_LIB = {
     var: (args, env) => {},
     func: (args, env) => {},
-    ask: (args, env) => {},
+    ask: (args, env) => {
+        while (args.length > 1) {
+            const cond = args.pop();
+            const then = args.pop();
+            if (interpret(cond, env)) {
+                return interpret(then, env);
+            }
+        }
+        if (args.length === 1) {
+            return interpret(args[0], env);
+        }
+        return 0;
+    },
     loop: (args, env) => {},
-    say: (args, env) => {},
+    say: (args, env) => {
+        let r = 0;
+        for (let a of args) {
+            r = interpret(a, env);
+            console.log(r);
+        }
+        return r;
+    },
     // Logical operations
-    not: (args, env) => {},
-    and: (args, env) => {},
-    or: (args, env) => {},
+    not: (args, env) => {
+        _max_args('not / !', args.length, 1);
+        return !interpret(args[0], env);
+    },
+    and: (args, env) => {
+        _max_args('and / &', args.length, 2);
+        return interpret(args[0], env) && interpret(args[1], env);
+    },
+    or: (args, env) => {
+        _max_args('or / |', args.length, 2);
+        return interpret(args[0], env) || interpret(args[1], env);
+    },
     // Comparisons
-    eq: (args, env) => {},
-    neq: (args, env) => {},
-    lt: (args, env) => {},
-    leq: (args, env) => {},
+    eq: (args, env) => {
+        _max_args('eq / =', args.length, 2);
+        return interpret(args[0], env) === interpret(args[1], env);
+    },
+    neq: (args, env) => {
+        _max_args('neq / !=', args.length, 2);
+        return interpret(args[0], env) !== interpret(args[1], env);
+    },
+    lt: (args, env) => {
+        _max_args('lt / <', args.length, 2);
+        return interpret(args[0], env) < interpret(args[1], env);
+    },
+    leq: (args, env) => {
+        _max_args('leq / <=', args.length, 2);
+        return interpret(args[0], env) <= interpret(args[1], env);
+    },
     // Arithmetic operations
     add: (args, env) => {
-        let r = interpret(args[0]);
+        let r = interpret(args[0], env);
         for (let a of args.slice(1)) {
             r += interpret(a, env);
         }
         return r;
     },
     sub: (args, env) => {
-        let r = interpret(args[0]);
+        let r = interpret(args[0], env);
         for (let a of args.slice(1)) {
             r -= interpret(a, env);
         }
         return r;
     },
     mul: (args, env) => {
-        let r = interpret(args[0]);
+        let r = interpret(args[0], env);
         for (let a of args.slice(1)) {
             r *= interpret(a, env);
         }
         return r;
     },
     div: (args, env) => {
-        let r = interpret(args[0]);
+        let r = interpret(args[0], env);
         for (let a of args.slice(1)) {
             r /= interpret(a, env);
         }
         return r;
     },
     mod: (args, env) => {
-        let r = interpret(args[0]);
+        let r = interpret(args[0], env);
         for (let a of args.slice(1)) {
             r %= interpret(a, env);
         }

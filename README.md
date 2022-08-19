@@ -1,31 +1,29 @@
-![logo](logo-lluna-lang-js.svg)
+![logo](logo.svg)
 
 # lluna lang js
 
-## what’s lluna?
+## What’s *Lluna*?
 
-**lluna** ([/ˈʎu.nə/](https://en.wiktionary.org/wiki/lluna) *lit.* moon) is a personal project involving many subprojects that focus on learning, minimalism and design
+***Lluna*** ([/ˈʎu.nə/](https://en.wiktionary.org/wiki/lluna) *lit.* moon) is a personal project involving many subprojects that focus on learning, minimalism and design.
 
-**lluna lang** is lluna’s programming language, inspired mainly by Lisp and Lua
+**Lluna lang** is *Lluna*’s programming language, inspired mainly by [Lisp](https://en.wikipedia.org/wiki/Lisp_(programming_language)) and [Lua](https://en.wikipedia.org/wiki/Lua_(programming_language)).
 
-## why JS?
+## Why JS?
 
-this JavaScript implementation is a proof of concept, the final version will be written in C and have a proper VM 
+This JavaScript implementation is a proof of concept, the final version will be written in C and have a proper VM.
 
-however, since it’s JavaScript, you can try this implementation of lluna lang right away in the browser
+However, since it’s JavaScript, you can try this implementation of *Lluna lang* right away in your browser.
 
 ## TO-DO
 
-> everything is in a preliminary state and can change anytime as I adjust the language features and functions as I go
+- [ ] lex (→ tokens)
 
-- [x] lex & parse
+- [ ] parse (→ AST)
 
-- [ ] interpreter (through JS)
+- [ ] compile (→ bytecode)
 
-- [ ] compile (ast -> bytecode)
+- [ ] vm (→ magic✨)
 
-- [x] vm (bytecode -> magic✨) [prototype]
-
-- [ ] web interactive
+- [ ] interactive web interpreter
 
 - [ ] tutorial / wiki
