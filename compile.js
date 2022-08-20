@@ -1,6 +1,6 @@
 // lluna lang js
 // compile.js - Compiler
 
-export function compile(ast) {}
+function compile(ast) {}
 
 module.exports = { compile };
