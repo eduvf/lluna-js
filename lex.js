@@ -24,9 +24,14 @@ function scan_sym(s, l, i) {
         i++;
     }
     let sym = s.slice(start, i);
-    if (/\-?\d*\.?\d+/.test(sym)) {
-        // number
-        return { type: 'num', value: Number(sym), start: start, index: i };
+    // since it's JS, all numbers are the same,
+    // but later, the VM will treat integers and floats differently
+    if (/^-?\d+\.?$/.test(sym)) {
+        // integer
+        return { type: 'int', value: Number(sym), start: start, index: i };
+    } else if (/^-?\d*\.\d+$/.test(sym)) {
+        // float
+        return { type: 'flt', value: Number(sym), start: start, index: i };
     } else {
         // keyword (or shortcut)
         return { type: 'key', value: sym, start: start, index: i };
