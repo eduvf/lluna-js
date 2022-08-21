@@ -27,6 +27,11 @@ const SHORTCUTS = {
     '%': 'mod',
 };
 
-const STD_LIB = {};
+const STD_LIB = {
+    var: {
+        index: 0,
+        is_func: true,
+    },
+};
 
-module.exports = { SHORTCUTS };
+module.exports = { SHORTCUTS, STD_LIB };

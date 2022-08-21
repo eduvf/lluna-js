@@ -2,28 +2,36 @@
 // compile.js - Compiler
 
 const SHORTCUTS = require('./std_lib.js').SHORTCUTS;
+const STD_LIB = require('./std_lib.js').STD_LIB;
 
-function set_var(symbol, env, is_func) {
+let env = [STD_LIB];
+
+function check_arg_num(node, min = 0, max = Infinity) {
+    let l = node.length - 1;
+    if (l < min || l > max) {
+        throw new Error(
+            `[!] Too few or too many arguments!\n` +
+                `    Check function "${node[0].value}" at index ${node[0].index}.`
+        );
+    }
+    return l;
+}
+
+function set_var(symbol, is_func) {
     // find out if the variable already exists
     for (let i = env.length - 1; i >= 0; i--) {
         if (symbol in env[i]) {
             // modify its value
-            return {
-                byc: 'md ' + env[i][symbol].index + '\n',
-                env: env,
-            };
+            return 'md ' + env[i][symbol].index + '\n';
         }
     }
     // if it doesn't exist, add it to the current scope
-    const index = env[env.length - 1].length;
+    const index = Object.keys(env[env.length - 1]).length;
     env[env.length - 1][symbol] = { index: index, is_func: is_func };
-    return {
-        byc: 'st ' + index + '\n',
-        env: env,
-    };
+    return 'st ' + index + '\n';
 }
 
-function find_var(node, env) {
+function find_var(node) {
     let symbol = node.value;
     // if it's a shortcut, replace it by its label
     if (symbol in SHORTCUTS) {
@@ -40,27 +48,47 @@ function find_var(node, env) {
         }
     }
     // error if not found
-    console.error('[!] Variable "${symbol}" not found at index ${node.index}.');
+    throw new Error(
+        `[!] Variable "${symbol}" not found at index ${node.index}.`
+    );
 }
 
-function compile(node, env, byc = '') {
+function compile(node, byc = '') {
     if (Array.isArray(node)) {
         // is an expression
         if (node.length === 0) {
             // an empty expression returns 0
-            byc += 'ps 0\n';
-            return { byc: byc, env: env };
+            return 'ps 0\n';
         }
 
         if (!Array.isArray(node[0]) && node[0].type === 'key') {
             // if the first element is a keyword
             // check if it's a function
-            const f = find_var(node[0], env);
+            const f = find_var(node[0]);
             if (f.is_func) {
                 // if it's a function, check for the core ones
                 // otherwise, create a function call
                 switch (f.sym) {
                     case 'var':
+                        // (var name [value])
+                        let l = check_arg_num(node, 1, 2);
+                        // checks that the 1st argument is a keyword
+                        if (node[1].type !== 'key') {
+                            throw new Error(
+                                `[!] 1st argument in "var" has to be a KEYWORD!\n` +
+                                    `    Check argument at index ${node[1].index}.`
+                            );
+                        }
+                        let name = node[1].value;
+                        if (l === 2) {
+                            // if there's a value, compile it
+                            byc += compile(node[2], byc);
+                        } else {
+                            // else use 0
+                            byc += 'ps 0\n';
+                        }
+                        // sets the variable
+                        byc += set_var(name, false);
                         break;
                     case 'func':
                         break;
@@ -78,7 +106,7 @@ function compile(node, env, byc = '') {
                         break;
                     default:
                 }
-                return { byc: byc, env: env };
+                return byc;
             }
         }
 
@@ -86,63 +114,19 @@ function compile(node, env, byc = '') {
         // an atom, or a non-function keyword
         env.push({}); // new scope
         for (const expr of node) {
-            let ret = compile(expr, env, byc);
-            byc = ret.byc;
-            env = ret.env;
+            byc = compile(expr, byc);
         }
         env.pop(); // end scope
-        return { byc: byc, env: env };
+        return byc;
     } else {
         // is an atom
         if (node.type === 'key') {
-            byc += find_var(node, env).byc;
-            return { byc: byc, env: env };
+            return find_var(node).byc;
         }
-        byc += 'ps ' + node.value + '\n';
-        return { byc: byc, env: env };
+        // TODO: use different 'push' modes
+        // according to the node.value's byte size
+        return 'ps ' + node.value + '\n';
     }
 }
-
-// function compile(node, env, byte) {
-//     if (Array.isArray(node)) {
-//         // is an expression
-//         if (node.length === 0) {
-//             // an empty expression returns 0
-//             return 0;
-//         }
-
-//         if (!Array.isArray(node[0]) && node[0].type === 'key') {
-//             // if the first element is a keyword
-//             // check if it's a function
-//             const f = find_var(node[0], env);
-//             if (f.is_func) {
-//                 let args = [];
-//                 for (let i = 1; i < node.length; i++) {
-//                     // evaluate arguments if needed
-//                     if (f.eval_args[i - 1]) {
-//                         args.push(compile(node[i], env));
-//                     } else {
-//                         args.push(node[i]);
-//                     }
-//                 }
-//                 return f.call(args, env);
-//             }
-//         }
-
-//         env.push({}); // new scope
-//         let ret_val = 0;
-//         for (let expr of node) {
-//             ret_val = compile(expr, env);
-//         }
-//         env.pop(); // end scope
-//         return ret_val;
-//     } else {
-//         // is an atom
-//         if (node.type === 'key') {
-//             return find_var(node, env);
-//         }
-//         return node.value;
-//     }
-// }
 
 module.exports = { compile };
