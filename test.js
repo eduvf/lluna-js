@@ -17,6 +17,10 @@ let test3 = `(
     say 'bye')
 `;
 
+let test4 = `(
+    + 1 (+ 2 3)
+)`;
+
 function test(t) {
     let s = '';
     let tokens = lex(t);

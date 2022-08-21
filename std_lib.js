@@ -27,4 +27,6 @@ const SHORTCUTS = {
     '%': 'mod',
 };
 
+const STD_LIB = {};
+
 module.exports = { SHORTCUTS };
