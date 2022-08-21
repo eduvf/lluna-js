@@ -44,8 +44,8 @@ function parse(tokens) {
         // error if no closing parenthesis has been found
         if (tokens.length === 0) {
             console.error(
-                '[!] Missing closing parenthesis!\n' +
-                    '    Check "(" starting at index ${t.index}.'
+                `[!] Missing closing parenthesis!\n` +
+                    `    Check "(" starting at index ${t.index}.`
             );
         }
 

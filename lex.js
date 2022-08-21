@@ -94,8 +94,8 @@ function lex(s) {
         } else {
             // ignore non-ASCII characters (outside of strings)
             console.warn(
-                '[*] Non-ASCII characters are ignored.\n' +
-                    '    Ignoring "${c}" at index ${i}.'
+                `[*] Non-ASCII characters are ignored.\n` +
+                    `    Ignoring "${c}" at index ${i}.`
             );
             i++;
         }
