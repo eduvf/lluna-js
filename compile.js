@@ -5,6 +5,7 @@ const SHORTCUTS = require('./std_lib.js').SHORTCUTS;
 const STD_LIB = require('./std_lib.js').STD_LIB;
 
 let env = [STD_LIB];
+let next_id = 0;
 
 function check_arg_num(node, min = 0, max = Infinity) {
     let l = node.length - 1;
@@ -22,13 +23,15 @@ function set_var(symbol, is_func) {
     for (let i = env.length - 1; i >= 0; i--) {
         if (symbol in env[i]) {
             // modify its value
-            return 'md ' + env[i][symbol].index + '\n';
+            return 'md ' + env[i][symbol].id + '\n';
         }
     }
     // if it doesn't exist, add it to the current scope
-    const index = Object.keys(env[env.length - 1]).length;
-    env[env.length - 1][symbol] = { index: index, is_func: is_func };
-    return 'st ' + index + '\n';
+    // const id = Object.keys(env[env.length - 1]).length;
+    const id = next_id;
+    next_id++;
+    env[env.length - 1][symbol] = { id: id, is_func: is_func };
+    return 'st ' + id + '\n';
 }
 
 function find_var(node) {
@@ -42,7 +45,7 @@ function find_var(node) {
         if (symbol in env[i]) {
             return {
                 sym: symbol,
-                byc: 'ld ' + env[i][symbol].index + '\n',
+                byc: 'ld ' + env[i][symbol].id + '\n',
                 is_func: env[i][symbol].is_func,
             };
         }
