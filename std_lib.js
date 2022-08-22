@@ -39,13 +39,13 @@ const STD_LIB = {
             for (let i = env.length - 1; i >= 0; i--) {
                 if (var_name in env[i]) {
                     // if found, modify its value
-                    byc += `md ${var_name}\n`;
+                    byc += `md \$${var_name}\n`;
                     return { byc: byc, env: env };
                 }
             }
             // otherwise, add the variable to the current scope
             env[env.length - 1][var_name] = null;
-            byc += `st ${var_name}\n`;
+            byc += `st \$${var_name}\n`;
             return { byc: byc, env: env };
         },
     },
