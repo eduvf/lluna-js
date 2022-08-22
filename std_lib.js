@@ -28,10 +28,14 @@ const SHORTCUTS = {
 };
 
 const STD_LIB = {
-    var: {
-        index: 0,
-        is_func: true,
-    },
+    var: { is_func: true },
+    func: { is_func: true },
+    ask: { is_func: true },
+    loop: { is_func: true },
+    say: { is_func: true },
+    lsn: { is_func: true },
+    list: { is_func: true },
+    item: { is_func: true },
 };
 
 module.exports = { SHORTCUTS, STD_LIB };
