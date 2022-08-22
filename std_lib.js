@@ -7,10 +7,11 @@ const SHORTCUTS = {
     '~': 'func',
     '?': 'ask', // if
     '@': 'loop',
-    '->': 'say', // print
-    '<-': 'lsn', // input
     '#': 'list',
     '.': 'item',
+    // I/O
+    '->': 'say', // print
+    '<-': 'lsn', // input
     // Logic
     '!': 'not',
     '&': 'and',
@@ -28,10 +29,18 @@ const SHORTCUTS = {
 };
 
 const STD_LIB = {
+    // GENERAL
     var: {
-        arg_range: [1, 2], // min and max number of arguments
-        arg_compile: [false, true], // whether arguments have to be compiled
-        arg_type: ['key', null], // if an argument isn't compiled, check its type
+        // parm.range   : min and max number of arguments (default: [0, Infinity])
+        // parm.comp    : whether arguments have to be compiled
+        // parm.type    : if an argument isn't compiled, check its type
+        // parm.mod_env : whether it modifies 'env'
+        parm: {
+            range: [1, 2],
+            comp: [false, true],
+            type: ['key', null],
+            mod_env: true,
+        },
         call: function (args, env) {
             let var_name = args[0];
             let byc = args.length > 1 ? args[1] : 'ps 0\n';
@@ -49,13 +58,26 @@ const STD_LIB = {
             return { byc: byc, env: env };
         },
     },
-    func: { is_func: true },
-    ask: { is_func: true },
-    loop: { is_func: true },
-    say: { is_func: true },
-    lsn: { is_func: true },
-    list: { is_func: true },
-    item: { is_func: true },
+    func: {},
+    ask: {},
+    loop: {},
+    list: {},
+    item: {},
+    // I/O
+    say: {
+        parm: {
+            range: [],
+            comp: [true],
+            type: [],
+            mod_env: false,
+        },
+        call: function (args) {
+            let byc = args.join('');
+            byc += 'io std_out\n'.repeat(args.length);
+            return { byc: byc };
+        },
+    },
+    lsn: {},
 };
 
 module.exports = { SHORTCUTS, STD_LIB };

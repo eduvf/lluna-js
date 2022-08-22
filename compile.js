@@ -48,9 +48,9 @@ function compile(node, byc = '') {
             const f = find_var(node[0]);
             if (f.hasOwnProperty('call')) {
                 // get information about the function's arguments
-                const arg_range = f.arg_range;
-                const arg_comp = f.arg_compile;
-                const arg_type = f.arg_type;
+                const arg_range = f.parm.range;
+                const arg_comp = f.parm.comp;
+                const arg_type = f.parm.type;
 
                 // check the number of arguments
                 check_arg_num(node, arg_range[0], arg_range[1]);
@@ -82,10 +82,15 @@ function compile(node, byc = '') {
                     }
                 }
 
-                // call the function and update 'byc' and 'env
-                let r = f.call(args, env);
+                // call the function and update 'byc' (and 'env' if necessary)
+                let r;
+                if (f.parm.mod_env) {
+                    r = f.call(args, env);
+                    env = r.env;
+                } else {
+                    r = f.call(args);
+                }
                 byc += r.byc;
-                env = r.env;
 
                 return byc;
             }
