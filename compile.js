@@ -5,7 +5,6 @@ const SHORTCUTS = require('./std_lib.js').SHORTCUTS;
 const STD_LIB = require('./std_lib.js').STD_LIB;
 
 let env = [STD_LIB];
-let next_id = 0;
 
 function check_arg_num(node, min = 0, max = Infinity) {
     let l = node.length - 1;
