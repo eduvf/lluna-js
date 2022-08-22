@@ -14,7 +14,6 @@ function check_arg_num(node, min = 0, max = Infinity) {
                 `    Check function "${node[0].value}" at index ${node[0].index}.`
         );
     }
-    return l; // not needed
 }
 
 function find_var(node) {
