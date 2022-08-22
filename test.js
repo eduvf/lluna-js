@@ -26,6 +26,7 @@ let test5 = `(
     : r 3
     : n 2
     : test ()
+    : r 5
 )`;
 
 function test(t) {
