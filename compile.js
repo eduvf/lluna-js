@@ -76,7 +76,13 @@ function compile(node, byc = '') {
                                 ? arg_type[i]
                                 : arg_type[arg_type.length - 1];
                         if (node[i + 1].type !== arg_expected_type) {
-                            // TODO: Error
+                            // type error
+                            throw new Error(
+                                `[!] An argument at function "${node[0].value}" doesn\'t match the expected type (${arg_expected_type}).` +
+                                    `    Check argument "${
+                                        node[i + 1].value
+                                    }" at index ${node[i + 1].index}.`
+                            );
                         }
                         args.push(node[i + 1].value);
                     }
