@@ -77,7 +77,17 @@ const STD_LIB = {
             return { byc: byc };
         },
     },
-    lsn: {},
+    lsn: {
+        parm: {
+            range: [0, 0],
+            comp: [],
+            type: [],
+            mod_env: false,
+        },
+        call: function (args) {
+            return { byc: 'io std_in\n' };
+        },
+    },
 };
 
 module.exports = { SHORTCUTS, STD_LIB };
