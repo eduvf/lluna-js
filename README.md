@@ -24,17 +24,19 @@ However, since it’s JavaScript, you can try this implementation of *Lluna lang
   
   - [x] define basic opcodes
   
-  - [ ] define function opcodes
-  
   - [ ] define list opcodes
-  
-  - [ ] implement compiler
 
 - [ ] vm (→ magic✨)
+
+- [ ] cleanup & simplify
 
 - [ ] interactive web interpreter
 
 - [ ] tutorial / wiki
+
+- [ ] → to fantasy console
+  
+  - [ ] draw capabilities
 
 ## Opcodes
 
