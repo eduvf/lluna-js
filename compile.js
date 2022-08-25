@@ -34,18 +34,19 @@ function find_var(node) {
     );
 }
 
-function compile(node, byc = '') {
+function compile(node, byc = []) {
     if (Array.isArray(node)) {
         // is an expression
         if (node.length === 0) {
             // an empty expression returns 0
-            return 'ps 0\n';
+            return ['ps', 0];
         }
 
         if (!Array.isArray(node[0]) && node[0].type === 'key') {
             // if the first element is a keyword
             // check if it's a function
             const f = find_var(node[0]);
+
             if (f.hasOwnProperty('call')) {
                 // get information about the function's arguments
                 const arg_range = f.parm.range;
@@ -60,7 +61,7 @@ function compile(node, byc = '') {
                 let args = [];
 
                 for (let i = 0; i < node.length - 1; i++) {
-                    // whether the argument will be compiled
+                    // check if the argument has to be compiled
                     let arg_is_compiled =
                         i < arg_comp.length
                             ? arg_comp[i]
@@ -96,29 +97,28 @@ function compile(node, byc = '') {
                 } else {
                     r = f.call(args);
                 }
-                byc += r.byc;
+                byc.push(r.byc);
 
                 return byc;
             }
         }
 
-        // if the first element is a nested expression,
+        // otherwise, if the first element is a nested expression,
         // an atom, or a non-function keyword
         env.push({}); // new scope
         for (const expr of node) {
-            byc = compile(expr, byc);
+            byc.push(compile(expr));
         }
         env.pop(); // end scope
+
         return byc;
     } else {
         // is an atom
         if (node.type === 'key') {
             find_var(node);
-            return `ld \$${node.value}\n`;
+            return ['ld', node.value];
         }
-        // TODO: use different 'push' modes
-        // according to the node.value's byte size
-        return `ps ${node.value}\n`;
+        return ['ps', node.value];
     }
 }
 

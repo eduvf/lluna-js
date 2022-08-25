@@ -43,18 +43,20 @@ const STD_LIB = {
         },
         call: function (args, env) {
             let var_name = args[0];
-            let byc = args.length > 1 ? args[1] : 'ps 0\n';
+            let byc = args.length > 1 ? [args[1]] : [['ps', 0]];
+
             // check if the variable already exists
             for (let i = env.length - 1; i >= 0; i--) {
                 if (var_name in env[i]) {
                     // if found, modify its value
-                    byc += `md \$${var_name}\n`;
+                    byc.push(['md', var_name]);
                     return { byc: byc, env: env };
                 }
             }
+
             // otherwise, add the variable to the current scope
             env[env.length - 1][var_name] = null;
-            byc += `st \$${var_name}\n`;
+            byc.push(['st', var_name]);
             return { byc: byc, env: env };
         },
     },
@@ -72,8 +74,11 @@ const STD_LIB = {
             mod_env: false,
         },
         call: function (args) {
-            let byc = args.join('');
-            byc += 'io std_out\n'.repeat(args.length);
+            let byc = [];
+            for (const a in args) {
+                byc.push(args[a]);
+                byc.push(['io', 'std_out']);
+            }
             return { byc: byc };
         },
     },
@@ -85,7 +90,7 @@ const STD_LIB = {
             mod_env: false,
         },
         call: function (args) {
-            return { byc: 'io std_in\n' };
+            return { byc: ['io', 'std_in'] };
         },
     },
 };
