@@ -40,13 +40,10 @@ function test(t) {
     s += JSON.stringify(ast);
     s += '\n\n';
     let byc = compile(ast);
-    // s += byc;
-    // byc += 'ht\n';
+    s += byc;
+    byc += 'ht\n';
 
-    // vm(byc);
-
-    s = JSON.stringify(byc) + '\n\n';
-    s += JSON.stringify(byc.flat(2));
+    vm(byc);
 
     return s;
 }
