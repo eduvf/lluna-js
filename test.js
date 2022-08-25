@@ -1,6 +1,7 @@
 const lex = require('./lex.js').lex;
 const parse = require('./parse.js').parse;
 const compile = require('./compile.js').compile;
+const vm = require('./vm.js').vm;
 
 let test1 = `
 -> + 1 -.5 'hi!'6. à
@@ -40,6 +41,9 @@ function test(t) {
     s += '\n\n';
     let byc = compile(ast);
     s += byc;
+    byc += 'ht\n';
+
+    vm(byc);
 
     return s;
 }
