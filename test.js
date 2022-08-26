@@ -43,6 +43,7 @@ function test(t) {
     s += byc;
     byc += 'ht\n';
 
+    console.log(s);
     vm(byc);
 
     return s;

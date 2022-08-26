@@ -72,8 +72,10 @@ const STD_LIB = {
             mod_env: false,
         },
         call: function (args) {
-            let byc = args.join('');
-            byc += 'io std_out\n'.repeat(args.length);
+            let byc = [];
+            for (const a of args) {
+                byc += a + 'io std_out\n';
+            }
             return { byc: byc };
         },
     },
