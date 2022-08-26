@@ -35,8 +35,9 @@ function test(t) {
     let r;
 
     r = lex(t);
+    r = parse(r);
 
     return JSON.stringify(r);
 }
 
-console.log(test(test1));
+console.log(test(test4));

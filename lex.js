@@ -1,7 +1,7 @@
 // lluna lang js
 // lex.js - Lexer
 
-function scan_str(s, len, i, line) {
+function _scan_str(s, len, i, line) {
     i++; // ignore opening quote
     let start = i;
     while (i < len) {
@@ -16,7 +16,7 @@ function scan_str(s, len, i, line) {
     return { value: s.slice(start, i - 1), i: i, line: line };
 }
 
-function scan_key(s, len, i) {
+function _scan_key(s, len, i) {
     // a keyword starts with a letter or '_'
     // and then can include numbers and '?'
     let start = i;
@@ -30,7 +30,7 @@ function scan_key(s, len, i) {
     return { value: s.slice(start, i), i: i };
 }
 
-function scan_sym(s, len, i) {
+function _scan_sym(s, len, i) {
     // a symbol can be a number or a (shortcut) keyword
     let start = i;
     while (i < len) {
@@ -92,20 +92,20 @@ function lex(s) {
             i++;
         } else if ("'".includes(c)) {
             // '' string
-            let ret = scan_str(s, len, i, line);
+            let ret = _scan_str(s, len, i, line);
             tokens.push({ type: 'str', value: ret.value, line: line });
             // update line & i
             line = ret.line;
             i = ret.i;
         } else if (/[a-zA-Z_]/.test(c)) {
             // keyword
-            let ret = scan_key(s, len, i);
+            let ret = _scan_key(s, len, i);
             tokens.push({ type: 'key', value: ret.value, line: line });
             // update i
             i = ret.i;
         } else if (/[0-9!^#|%&*+-./:<=>?@\\~]/.test(c)) {
             // number or keyword shortcut
-            let ret = scan_sym(s, len, i);
+            let ret = _scan_sym(s, len, i);
             tokens.push({ type: ret.type, value: ret.value, line: line });
             // update i
             i = ret.i;

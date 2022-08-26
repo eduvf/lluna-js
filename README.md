@@ -20,7 +20,7 @@ Clean and simplify:
 
 -   [x] lex (→ tokens)
 
--   [ ] parse (→ AST)
+-   [x] parse (→ AST)
 
 -   [ ] compile (→ bytecode)
 
