@@ -30,7 +30,7 @@ function _scan_key(s, len, i) {
     return { value: s.slice(start, i), i: i };
 }
 
-function _scan_sym(s, len, i) {
+function _scan_sym(s, len, i, line) {
     // a symbol can be a number or a (shortcut) keyword
     let start = i;
     while (i < len) {
@@ -51,9 +51,14 @@ function _scan_sym(s, len, i) {
     } else if (/^-?\d*\.\d+$/.test(sym)) {
         // float
         return { type: 'flt', value: Number(sym), i: i };
-    } else {
+    } else if (/^[!^#|%&*+-./:<=>?@\\~]+$/.test(sym)) {
         // keyword (or shortcut)
         return { type: 'key', value: sym, i: i };
+    } else {
+        // error
+        throw new Error(
+            `[!] Couldn't understand symbol "${sym}" at line ${line}.`
+        );
     }
 }
 
@@ -105,7 +110,7 @@ function lex(s) {
             i = ret.i;
         } else if (/[0-9!^#|%&*+-./:<=>?@\\~]/.test(c)) {
             // number or keyword shortcut
-            let ret = _scan_sym(s, len, i);
+            let ret = _scan_sym(s, len, i, line);
             tokens.push({ type: ret.type, value: ret.value, line: line });
             // update i
             i = ret.i;
