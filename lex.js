@@ -1,101 +1,121 @@
 // lluna lang js
 // lex.js - Lexer
 
-function scan_str(s, l, i, delim) {
-    i++; // ignore opening delimiter
+function scan_str(s, len, i, line) {
+    i++; // ignore opening quote
     let start = i;
-    while (i < l) {
-        if (!(s[i - 1] === '\\') && s[i] === delim) {
-            i++;
+    while (i < len) {
+        if (s[i] === '\n') {
+            line++;
+        } else if (!(s[i - 1] === '\\') && s[i] === "'") {
             break;
         }
         i++;
     }
-    return { value: s.slice(start, i - 1), start: start, index: i };
+    i++; // ignore closing quote
+    return { value: s.slice(start, i - 1), i: i, line: line };
 }
 
-function scan_sym(s, l, i) {
-    // a symbol can be a number, a keyword or a shortcut
+function scan_key(s, len, i) {
+    // a keyword starts with a letter or '_'
+    // and then can include numbers and '?'
     let start = i;
-    while (i < l) {
-        if (!/[!#-&*-~]/.test(s[i])) {
+    i++; // ignore the first char (it's checked already)
+    while (i < len) {
+        if (!/[a-zA-Z0-9_?]/.test(s[i])) {
+            break;
+        }
+        i++;
+    }
+    return { value: s.slice(start, i), i: i };
+}
+
+function scan_sym(s, len, i) {
+    // a symbol can be a number or a (shortcut) keyword
+    let start = i;
+    while (i < len) {
+        if (!/[0-9!^#|%&*+-./:<=>?@\\~]/.test(s[i])) {
             break;
         }
         i++;
     }
     let sym = s.slice(start, i);
-    // since it's JS, all numbers are the same,
-    // but later, the VM will treat integers and floats differently
+
+    // check type
+    // this implementation stores both integers and floats as JS Numbers
+    // numbers can omit digits before and after the dot
+    // if the integer or fractional part is 0
     if (/^-?\d+\.?$/.test(sym)) {
         // integer
-        return { type: 'int', value: Number(sym), start: start, index: i };
+        return { type: 'int', value: Number(sym), i: i };
     } else if (/^-?\d*\.\d+$/.test(sym)) {
         // float
-        return { type: 'flt', value: Number(sym), start: start, index: i };
+        return { type: 'flt', value: Number(sym), i: i };
     } else {
         // keyword (or shortcut)
-        return { type: 'key', value: sym, start: start, index: i };
+        return { type: 'key', value: sym, i: i };
     }
 }
 
 function lex(s) {
     let i = 0;
-    let l = s.length;
+    let line = 1;
+    let len = s.length;
     let tokens = [];
 
-    while (i < l) {
+    while (i < len) {
         // current character
         let c = s[i];
 
         if (c === ',') {
             // , comment
-            while (i < l) {
+            while (i < len) {
                 if (s[i] === '\n') {
+                    line++;
                     i++;
                     break;
                 }
                 i++;
             }
-        } else if (';\n'.includes(c)) {
-            // new line (; or \n)
-            tokens.push({
-                type: 'nl',
-                index: i,
-            });
+        } else if (c === ';') {
+            // ; is the same as a new line
+            tokens.push({ type: 'nl' });
+            i++;
+        } else if (c === '\n') {
+            // \n new line
+            tokens.push({ type: 'nl' });
+            line++;
             i++;
         } else if ('()'.includes(c)) {
-            // parenthesis
-            tokens.push({
-                type: c,
-                index: i,
-            });
+            // () parenthesis
+            tokens.push({ type: c, line: line });
             i++;
-        } else if ('\'"`'.includes(c)) {
-            // string
-            let r = scan_str(s, l, i, c);
-            i = r.index;
-            tokens.push({
-                type: 'str',
-                value: r.value,
-                index: r.start,
-            });
-        } else if (/[!#-&*-~]/.test(c)) {
-            // number or keyword
-            let r = scan_sym(s, l, i);
-            i = r.index;
-            tokens.push({
-                type: r.type,
-                value: r.value,
-                index: r.start,
-            });
+        } else if ("'".includes(c)) {
+            // '' string
+            let ret = scan_str(s, len, i, line);
+            tokens.push({ type: 'str', value: ret.value, line: line });
+            // update line & i
+            line = ret.line;
+            i = ret.i;
+        } else if (/[a-zA-Z_]/.test(c)) {
+            // keyword
+            let ret = scan_key(s, len, i);
+            tokens.push({ type: 'key', value: ret.value, line: line });
+            // update i
+            i = ret.i;
+        } else if (/[0-9!^#|%&*+-./:<=>?@\\~]/.test(c)) {
+            // number or keyword shortcut
+            let ret = scan_sym(s, len, i);
+            tokens.push({ type: ret.type, value: ret.value, line: line });
+            // update i
+            i = ret.i;
         } else if (/\s/.test(c)) {
             // ignore whitespace (except \n, found before)
             i++;
         } else {
-            // ignore non-ASCII characters (outside of strings)
+            // ignore non-LLUNASCII characters (outside of strings)
             console.warn(
-                `[*] Non-ASCII characters are ignored.\n` +
-                    `    Ignoring "${c}" at index ${i}.`
+                `[*] Non-LLUNASCII characters outside of strings are ignored.\n    Ignoring "${c}" at line ${line}.`
             );
             i++;
         }

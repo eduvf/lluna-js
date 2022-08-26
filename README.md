@@ -16,29 +16,47 @@ However, since it’s JavaScript, you can try this implementation of _Lluna lang
 
 ## TO-DO
 
+Clean and simplify:
+
 -   [x] lex (→ tokens)
 
--   [x] parse (→ AST)
+-   [ ] parse (→ AST)
 
 -   [ ] compile (→ bytecode)
 
-    -   [x] define basic opcodes
-
-    -   [ ] define list opcodes
-
 -   [ ] vm (→ magic✨)
 
--   [ ] cleanup & simplify
+Extra:
 
 -   [ ] interactive web interpreter
 
 -   [ ] tutorial / wiki
 
--   [ ] → to fantasy console
+## VM specs
 
-    -   [ ] draw capabilities
+### Types
 
-## Opcodes
+|  type  |                                     format                                     |           bit           |
+| :----: | :----------------------------------------------------------------------------: | :---------------------: |
+| `nil`  |                                     `nil`                                      |            -            |
+| `bool` |                                  `_1` or `_0`                                  |          [`B`]          |
+| `num`  | [binary16](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) | [`SEEE EEMM MMMM MMMM`] |
+| `char` |                            [llunascii](#llunascii)                             |      [`MMCC CCCC`]      |
+
+#### llunascii
+
+|      | 000 | 001 | 010 | 011 | 100 | 101 | 110 | 111 |
+| ---- | --- | --- | --- | --- | --- | --- | --- | --- |
+| 000x | ␣   | !   | ^   | #   | \|  | %   | &   | '   |
+| 001x | (   | )   | \*  | +   | ,   | -   | .   | /   |
+| 010x | 0   | 1   | 2   | 3   | 4   | 5   | 6   | 7   |
+| 011x | 8   | 9   | :   | ;   | <   | =   | >   | ?   |
+| 100x | @   | a   | b   | c   | d   | e   | f   | g   |
+| 101x | h   | i   | j   | k   | l   | m   | n   | o   |
+| 110x | p   | q   | r   | s   | t   | u   | v   | w   |
+| 111x | x   | y   | z   | \\  | \_  | ~   |     |     |
+
+### Opcodes
 
 -   `0x00`: no operation
 

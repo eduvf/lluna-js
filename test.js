@@ -4,7 +4,7 @@ const compile = require('./compile.js').compile;
 const vm = require('./vm.js').vm;
 
 let test1 = `
--> + 1 -.5 'hi!'6. à
+-> + 1 -.5 'hi!'6. à :v
 `;
 
 let test2 = `(
@@ -32,21 +32,11 @@ let test5 = `(
 )`;
 
 function test(t) {
-    let s = '';
-    let tokens = lex(t);
-    s += JSON.stringify(tokens);
-    s += '\n\n';
-    let ast = parse(tokens);
-    s += JSON.stringify(ast);
-    s += '\n\n';
-    let byc = compile(ast);
-    s += byc;
-    byc += 'ht\n';
+    let r;
 
-    console.log(s);
-    vm(byc);
+    r = lex(t);
 
-    return s;
+    return JSON.stringify(r);
 }
 
-console.log(test(test5));
+console.log(test(test1));
