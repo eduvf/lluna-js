@@ -4,6 +4,7 @@
 function _scan_str(s, len, i, line) {
     i++; // ignore opening quote
     let start = i;
+    let start_line = line;
     while (i < len) {
         if (s[i] === '\n') {
             line++;
@@ -11,6 +12,10 @@ function _scan_str(s, len, i, line) {
             break;
         }
         i++;
+    }
+    // check for unclosed strings
+    if (s[i] !== "'") {
+        throw new Error(`[!] Unclosed string starting at line ${start_line}.`);
     }
     i++; // ignore closing quote
     return { value: s.slice(start, i - 1), i: i, line: line };
