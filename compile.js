@@ -68,17 +68,15 @@ function _check_arg_type(type, arg_list, f_name, f_line) {
     return is_compiled;
 }
 
-function _find_var(node, env) {
+function _find_var(node, lib = STD_LIB) {
     let keyword = node.value;
     // check if it's a shortcut
     if (keyword in SHORTCUTS) {
         keyword = SHORTCUTS[keyword];
     }
-    // search in 'env'
-    for (let i = env.length - 1; i >= 0; i--) {
-        if (keyword in env[i]) {
-            return env[i][keyword];
-        }
+    // search in 'lib'
+    if (keyword in lib) {
+        return lib[keyword];
     }
     // error if not found
     throw new Error(
@@ -86,69 +84,58 @@ function _find_var(node, env) {
     );
 }
 
-function _compile_branch(node, env) {
+function _compile_branch(node) {
     if (Array.isArray(node)) {
         // is an expression
         if (!Array.isArray(node[0]) && node[0].type === 'key') {
             // if the first element is a keyword,
             // check if it's a function
-            const func = _find_var(node[0], env);
+            const func = _find_var(node[0]);
+
             if (func.hasOwnProperty('call')) {
                 // check function's parameters
-                const mod_env = func.parm.env;
                 const is_compiled = _check_parm(func, node);
 
                 let args = [];
                 for (let i = 0; i < is_compiled.length; i++) {
                     if (is_compiled[i]) {
-                        args.push(_compile_branch(node[i + 1], env));
+                        args.push(_compile_branch(node[i + 1]));
                     } else {
                         args.push(node[i + 1]);
                     }
                 }
 
-                // call the function, updating 'env' if necessary
-                let result;
-                if (mod_env) {
-                    result = func.call(args, env);
-                    env = result.env;
-                } else {
-                    result = func.call(args);
-                }
-
-                return result.byc;
+                // call the function
+                return func.call(args);
             }
         }
 
         // else if the first element is a nested expression,
         // an atom, or a non-function keyword
         let byc = '';
-        env.push({}); // new scope
         for (const expr of node) {
-            byc += _compile_branch(expr, env);
+            byc += _compile_branch(expr);
         }
-        env.pop(); // end scope
         return byc;
     } else {
         // is an atom
         switch (node.type) {
             case 'key':
-                let value = _find_var(node, env);
-                return `ld ref:${value}\n`;
+                return `ld r.${node.value}\n`;
             case 'str':
             // TODO: store list of chars
             default:
-                return `ps ${node.type}:${node.value}\n`;
+                let type = node.type.slice(0, 1);
+                return `ps ${type}.${node.value}\n`;
         }
     }
 }
 
 function compile(ast) {
     let byc = '';
-    let env = [STD_LIB];
 
     for (const b of ast) {
-        byc += _compile_branch(b, env);
+        byc += _compile_branch(b);
     }
     byc += 'ht\n';
 

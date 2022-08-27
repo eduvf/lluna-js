@@ -32,41 +32,21 @@ const SHORTCUTS = {
 };
 
 const STD_LIB = {
-    // CONSTANTS
-    nil: 'nil',
-    _0: 'bool_false',
-    _1: 'bool_true',
     // GENERAL
     var: {
-        parm: { env: true, range: [1, 2], type: ['key', null], rev: false },
-        call: (args, env) => {
+        parm: { range: [1, 2], type: ['key', null], rev: false },
+        call: (args) => {
             let var_name = args[0].value;
-            let byc = args.length > 1 ? args[1] : 'ps ref:nil\n';
+            let byc = args.length > 1 ? args[1] : 'ps r.nil\n';
 
-            // check if the variable already exists
-            for (let i = env.length - 1; i >= 0; i--) {
-                if (var_name in env[i]) {
-                    // if found, modify its value
-                    byc += `md ref:${var_name}\n`;
-                    return { byc: byc, env: env };
-                }
-            }
-            // else add the variable to the current scope
-            env[env.length - 1][var_name] = var_name;
-            byc += `st ref:${var_name}\n`;
-            return { byc: byc, env: env };
+            // set the variable
+            byc += `st r.${var_name}\n`;
+            return byc;
         },
     },
     func: {
-        parm: {
-            env: false,
-            range: [1, 3],
-            type: ['key', 'keylist', null],
-            rev: true,
-        },
-        call: (args) => {
-            return { byc: byc };
-        },
+        parm: { range: [1, 3], type: ['key', 'keylist', null], rev: true },
+        call: (args) => {},
     },
     ask: {},
     loop: {},
@@ -74,16 +54,21 @@ const STD_LIB = {
     item: {},
     // I/O
     say: {
-        parm: { env: false, range: [0, Infinity], type: [null], rev: false },
+        parm: { range: [0, Infinity], type: [null], rev: false },
         call: (args) => {
             let byc = '';
             for (const a of args) {
-                byc += a + 'io std:out\n';
+                byc += a + 'io r.std_out\n';
             }
-            return { byc: byc };
+            return byc;
         },
     },
-    lsn: {},
+    lsn: {
+        parm: { range: [0, 0], type: [], rev: false },
+        call: (args) => {
+            return 'io r.std_in\n';
+        },
+    },
 };
 
 module.exports = { SHORTCUTS, STD_LIB };

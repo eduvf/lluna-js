@@ -62,7 +62,7 @@ Extra:
 
 -   `0x10, 0x11`: push, pop
 
--   `0x20, 0x21, 0x22`: load, store, mod
+-   `0x20, 0x21`: load, store
 
 -   `0x30, 0x31, 0x32`: jump, jump if zero, jump if not zero
 
@@ -77,7 +77,6 @@ Extra:
 | `0x11` |      pp       |  -   | **Pop** from the stack                                    |
 | `0x20` |      ld       |  x   | **Load** from index X and push to the stack               |
 | `0x21` |      st       |  x   | Pop from the stack and **store** to index X               |
-| `0x22` |      md       |  x   | Pop from the stack and **modify** value at index X        |
 | `0x30` |      jp       |  x   | **Jump** to instruction X                                 |
 | `0x31` |      jz       |  x   | Pop from the stack and **jump if zero**                   |
 | `0x32` |      jn       |  x   | Pop from the stack and **jump if not zero**               |

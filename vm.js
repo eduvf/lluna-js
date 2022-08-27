@@ -20,7 +20,7 @@ function vm(text_bytecode) {
         const arg = byc[ip][1] ? byc[ip][1] : null;
 
         switch (ins) {
-            case 'no':
+            case 'no': // no op
                 ip++;
             case 'ps': // push
                 stack.push(arg);
