@@ -43,7 +43,7 @@ Extra:
 |  type  |                                     format                                     |           bit           |
 | :----: | :----------------------------------------------------------------------------: | :---------------------: |
 | `nil`  |                                     `nil`                                      |            -            |
-| `bool` |                                  `_1` or `_0`                                  |          [`B`]          |
+| `bool` |                                  `_t` or `_f`                                  |          [`B`]          |
 | `num`  | [binary16](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) | [`SEEE EEMM MMMM MMMM`] |
 | `char` |                             llunascii (see below)                              |      [`MMCC CCCC`]      |
 

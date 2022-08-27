@@ -117,7 +117,7 @@ function _compile_branch(node) {
                 // push nil
                 return 'ps nil\n';
             case 'key':
-                if (node.value === '_1' || node.value === '_0') {
+                if (node.value === '_t' || node.value === '_f') {
                     // push boolean
                     return `ps b.${node.value}\n`;
                 }

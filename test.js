@@ -9,7 +9,7 @@ let test1 = `
 
 let test2 = `(
 ~ f (n) (
-    : r (# 1 2 3 _1)
+    : r (# 1 2 3 _t)
     r
 )
 -> (f 10)
@@ -29,7 +29,7 @@ let test5 = `(
     : r 3
     : n 'Hello あいう'
     : test
-    : r _1
+    : r _t
     -> r n test
 )`;
 
