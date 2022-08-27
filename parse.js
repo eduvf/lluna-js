@@ -54,7 +54,7 @@ function _parse_expr(tokens) {
 
         // an empty expression returns nil
         if (expr.length === 0) {
-            expr.push({ type: 'ref', value: 'nil' });
+            expr.push({ type: 'nil' });
         }
 
         return expr;
@@ -70,7 +70,7 @@ function _parse_expr(tokens) {
 function parse(tokens) {
     // return nil if there's no tokens
     if (tokens.length === 0) {
-        return [{ type: 'ref', value: 'nil' }];
+        return [{ type: 'nil' }];
     }
 
     // else parse all expressions

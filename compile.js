@@ -120,6 +120,9 @@ function _compile_branch(node) {
     } else {
         // is an atom
         switch (node.type) {
+            case 'nil':
+                // push nil
+                return 'ps nil\n';
             case 'key':
                 // load from keyword reference
                 return `ld r.${node.value}\n`;
