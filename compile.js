@@ -121,10 +121,13 @@ function _compile_branch(node) {
         // is an atom
         switch (node.type) {
             case 'key':
+                // load from keyword reference
                 return `ld r.${node.value}\n`;
             case 'str':
-            // TODO: store list of chars
+                // construct character list
+                return 'ls char\n   ' + encodeURI(node.value) + '\nle\n';
             default:
+                // push literal (int, flt)
                 let type = node.type.slice(0, 1);
                 return `ps ${type}.${node.value}\n`;
         }

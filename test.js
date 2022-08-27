@@ -26,7 +26,7 @@ let test4 = `(
 
 let test5 = `(
     : r 3
-    : n 2
+    : n 'Hello あいう'
     : test
     : r _1
     -> r n test
@@ -37,6 +37,9 @@ function test(t) {
 
     r = lex(t);
     r = parse(r);
+
+    console.log(JSON.stringify(r));
+
     r = compile(r);
 
     return r;

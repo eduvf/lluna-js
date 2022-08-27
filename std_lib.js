@@ -58,7 +58,7 @@ const STD_LIB = {
         call: (args) => {
             let byc = '';
             for (const a of args) {
-                byc += a + 'io r.std_out\n';
+                byc += a + 'io std_out\n';
             }
             return byc;
         },
@@ -66,7 +66,7 @@ const STD_LIB = {
     lsn: {
         parm: { range: [0, 0], type: [], rev: false },
         call: (args) => {
-            return 'io r.std_in\n';
+            return 'io std_in\n';
         },
     },
 };
