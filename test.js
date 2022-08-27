@@ -37,12 +37,9 @@ function test(t) {
 
     r = lex(t);
     r = parse(r);
-
-    console.log(JSON.stringify(r));
-
     r = compile(r);
 
     return r;
 }
 
-console.log(test(test5));
+console.log(test(test3));

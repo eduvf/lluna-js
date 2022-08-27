@@ -86,8 +86,8 @@ Extra:
 | `0x51` |   io std_in   |  -   | Pause execution and ask for **input** in 'std_in'         |
 | `0x60` |      cl       |  x   | **Call** subrutine passing list X as arguments            |
 | `0x61` |      rt       |  x   | **Return** from subroutine, retain list X as return value |
-| `0x70` |      lb       |  x   | **List begin**                                            |
-| `0x71` |      lp       |  x   | **List push**                                             |
+| `0x70` |      ls       |  x   | **List start**                                            |
+| `0x71` |      le       |  x   | **List end**                                              |
 | `0x72` |      lk       |  x   | **List link**                                             |
 | `0x73` |      ll       |  x   | **List load**                                             |
 | `0x74` |      lm       |  x   | **List modify**                                           |
