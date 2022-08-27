@@ -22,7 +22,11 @@ Clean and simplify:
 
 -   [x] parse (→ AST)
 
--   [ ] compile (→ bytecode)
+-   [x] compile (→ bytecode)
+
+    -   [ ] fix arg push order
+
+-   [ ] std_lib
 
 -   [ ] vm (→ magic✨)
 
@@ -58,38 +62,37 @@ Extra:
 
 ### Opcodes
 
--   `0x00`: no operation
+|   #    | mnemonic | description                                                        |
+| :----: | :------: | :----------------------------------------------------------------- |
+| `0x00` |    no    | **No operation**                                                   |
+| `0x10` |    ps    | **Push** literal or reference to the stack                         |
+| `0x20` |    ld    | **Load** a variable and push its value to the stack                |
+| `0x30` |    st    | **Set** a variable and **store** the value at the top of the stack |
+| `0x40` | jp / j\_ | **Jump** to an instruction (if ...) [^1]                           |
+| `0x50` |    op    | Perform a logical, arithmetic or bitwise **operation**             |
+| `0x60` |   (op)   | -                                                                  |
+| `0x70` |   l\_    | Perform a **list** operation, stored in the heap [^1]              |
+| `0x80` | cl / rt  | **Call** or **return** (subrutine)                                 |
+| `0x90` |    io    | Perform an **I/O** operation                                       |
+| `0xA0` |    -     |                                                                    |
+| `0xB0` |    -     |                                                                    |
+| `0xC0` |    -     |                                                                    |
+| `0xD0` |    -     |                                                                    |
+| `0xE0` |    -     |                                                                    |
+| `0xF0` |    ht    | **Halt** execution                                                 |
 
--   `0x10, 0x11`: push, pop
+[^1]: Other mnemonics:
 
--   `0x20, 0x21`: load, store
+-   **jz**: jump if zero
 
--   `0x30, 0x31, 0x32`: jump, jump if zero, jump if not zero
+-   **jn**: jump if not zero
 
--   `0x40, 0x41, ...`: op add, op sub, ...
+-   **ls**: list start
 
--   `0xFF`: halt
+-   **le**: list end
 
-|   #    |   mnemonic    | args | description                                               |
-| :----: | :-----------: | :--: | :-------------------------------------------------------- |
-| `0x00` |      no       |  -   | **No operation**                                          |
-| `0x10` |      ps       |  x   | **Push** value X to the stack                             |
-| `0x11` |      pp       |  -   | **Pop** from the stack                                    |
-| `0x20` |      ld       |  x   | **Load** from index X and push to the stack               |
-| `0x21` |      st       |  x   | Pop from the stack and **store** to index X               |
-| `0x30` |      jp       |  x   | **Jump** to instruction X                                 |
-| `0x31` |      jz       |  x   | Pop from the stack and **jump if zero**                   |
-| `0x32` |      jn       |  x   | Pop from the stack and **jump if not zero**               |
-| `0x40` | op + / op add |  -   | Perform the **add operation**                             |
-| `0x41` | op - / op sub |  -   | Perform the **sub operation**                             |
-| `0x50` |  io std_out   |  -   | Pop from the stack and **write** to 'std_out'             |
-| `0x51` |   io std_in   |  -   | Pause execution and ask for **input** in 'std_in'         |
-| `0x60` |      cl       |  x   | **Call** subrutine passing list X as arguments            |
-| `0x61` |      rt       |  x   | **Return** from subroutine, retain list X as return value |
-| `0x70` |      ls       |  x   | **List start**                                            |
-| `0x71` |      le       |  x   | **List end**                                              |
-| `0x72` |      lk       |  x   | **List link**                                             |
-| `0x73` |      ll       |  x   | **List load**                                             |
-| `0x74` |      lm       |  x   | **List modify**                                           |
-|        |      ...      |      |                                                           |
-| `0xFF` |      ht       |  -   | **Halt**                                                  |
+-   **ll**: list load
+
+-   **lm**: list modify
+
+-   **lr**: list remove

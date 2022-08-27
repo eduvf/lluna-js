@@ -47,6 +47,7 @@ const STD_LIB = {
         parm: { range: [1, 3], type: ['key', 'keylist'] },
         call: (args) => {
             // if name === '_' -> don't set variable
+            // ~ _() anonymous function
         },
     },
     ask: {},
