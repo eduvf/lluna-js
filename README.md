@@ -45,7 +45,7 @@ Extra:
 | `nil`  |                                     `nil`                                      |            -            |
 | `bool` |                                  `_1` or `_0`                                  |          [`B`]          |
 | `num`  | [binary16](https://en.wikipedia.org/wiki/Half-precision_floating-point_format) | [`SEEE EEMM MMMM MMMM`] |
-| `char` |                            [llunascii](#llunascii)                             |      [`MMCC CCCC`]      |
+| `char` |                             llunascii (see below)                              |      [`MMCC CCCC`]      |
 
 #### llunascii
 
@@ -66,13 +66,13 @@ Extra:
 | :----: | :------: | :----------------------------------------------------------------- |
 | `0x00` |    no    | **No operation**                                                   |
 | `0x10` |    ps    | **Push** literal or reference to the stack                         |
-| `0x20` |    ld    | **Load** a variable and push its value to the stack                |
+| `0x20` |    ld    | **Load** a variable and push its value to the stack\*              |
 | `0x30` |    st    | **Set** a variable and **store** the value at the top of the stack |
-| `0x40` | jp / j\_ | **Jump** to an instruction (if ...) [^1]                           |
+| `0x40` | jp / j\_ | **Jump** to an instruction (if ...)                                |
 | `0x50` |    op    | Perform a logical, arithmetic or bitwise **operation**             |
 | `0x60` |   (op)   | -                                                                  |
-| `0x70` |   l\_    | Perform a **list** operation, stored in the heap [^1]              |
-| `0x80` | cl / rt  | **Call** or **return** (subrutine)                                 |
+| `0x70` |   l\_    | Perform a **list** operation, stored in the heap                   |
+| `0x80` |    rt    | **Return** from subroutine                                         |
 | `0x90` |    io    | Perform an **I/O** operation                                       |
 | `0xA0` |    -     |                                                                    |
 | `0xB0` |    -     |                                                                    |
@@ -81,7 +81,9 @@ Extra:
 | `0xE0` |    -     |                                                                    |
 | `0xF0` |    ht    | **Halt** execution                                                 |
 
-[^1]: Other mnemonics:
+\*when loading a function reference, it behaves as a _call to subroutine_, adding a new frame to the stack
+
+Other mnemonics:
 
 -   **jz**: jump if zero
 

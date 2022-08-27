@@ -67,9 +67,10 @@ function _find_var(node, short = SHORTCUTS, lib = STD_LIB) {
         return lib[keyword];
     }
     // error if not found
-    throw new Error(
-        `[!] Variable "${keyword}" was not found. Check line ${node.line}.`
-    );
+    // throw new Error(
+    //     `[!] Variable "${keyword}" was not found. Check line ${node.line}.`
+    // );
+    return {};
 }
 
 function _compile_branch(node) {
@@ -95,6 +96,10 @@ function _compile_branch(node) {
 
                 // call the function
                 return func.call(args);
+            } else {
+                // user-defined functions have to be reversed
+                // so that the arguments are ordered correctly
+                node.reverse();
             }
         }
 
@@ -112,6 +117,10 @@ function _compile_branch(node) {
                 // push nil
                 return 'ps nil\n';
             case 'key':
+                if (node.value === '_1' || node.value === '_0') {
+                    // push boolean
+                    return `ps b.${node.value}\n`;
+                }
                 // load from keyword reference
                 return `ld r.${node.value}\n`;
             case 'str':

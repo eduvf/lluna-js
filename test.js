@@ -9,9 +9,10 @@ let test1 = `
 
 let test2 = `(
 ~ f (n) (
-    : r (* n 2)
-    / r 2
+    : r (# 1 2 3 _1)
+    r
 )
+-> (f 10)
 )`;
 
 let test3 = `(
@@ -42,4 +43,4 @@ function test(t) {
     return r;
 }
 
-console.log(test(test3));
+console.log(test(test2));

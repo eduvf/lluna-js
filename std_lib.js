@@ -44,16 +44,48 @@ const STD_LIB = {
         },
     },
     func: {
-        parm: { range: [1, 3], type: ['key', 'keylist'] },
+        parm: { range: [3, 3], type: ['key', 'keylist'] },
         call: (args) => {
-            // if name === '_' -> don't set variable
-            // ~ _() anonymous function
+            let var_name = args[0].value;
+            let byc = 'ls\n';
+            for (const a of args[1]) {
+                byc += `st r.${a.value}\n`;
+            }
+            byc += args[2]; // add body
+            byc += 'rt\nle\n';
+            if (!(var_name === '_')) {
+                // if name is not '_', set variable
+                // ~ _() -> anonymous function
+                byc += `st r.${var_name}\n`;
+            }
+            return byc;
         },
     },
-    ask: {},
+    ask: {
+        parm: {},
+    },
     loop: {},
-    list: {},
-    item: {},
+    list: {
+        parm: { range: false, type: [] },
+        call: (args) => {
+            let byc = 'ls\n';
+            for (const a of args) {
+                byc += a;
+            }
+            return byc + 'le\n';
+        },
+    },
+    item: {
+        parm: { range: [2, 3], type: ['key'] },
+        call: (args) => {
+            let list_ref = args[0].value;
+            let index = args[1];
+            if (args.length > 2) {
+                return args[2] + index + `lm r.${list_ref}\n`;
+            }
+            return index + `ll r.${list_ref}\n`;
+        },
+    },
     // I/O
     say: {
         parm: { range: false, type: [] },
