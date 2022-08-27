@@ -6,8 +6,11 @@ const STD_LIB = require('./std_lib.js').STD_LIB;
 
 function _check_parm(func, node) {
     // check the number of arguments
+
+    // subtract the first node (function node)
     let arg_num = node.length - 1;
-    let range = func.parm.range;
+    // set range if != false, otherwise we don't care
+    let range = func.parm.range ? func.parm.range : [0, Infinity];
     if (!(range[0] <= arg_num <= range[1])) {
         throw new Error(
             `[!] Too few or too many arguments in function "${node[0].value}".\n    Check line ${node[0].line}.`
@@ -15,47 +18,32 @@ function _check_parm(func, node) {
     }
 
     let arg_list = node.slice(1); // get the arguments
-    // reverse if the optional arguments are added first (not last)
-    if (func.parm.rev) {
-        arg_list.reverse();
-    }
-    // check argument type (if necessary)
-    let type = func.parm.type;
-    let is_compiled = _check_arg_type(
-        type,
-        arg_list,
-        node[0].value,
-        node[0].line
-    );
-    // reverse back (if necessary)
-    if (func.parm.rev) {
-        is_compiled.reverse();
-    }
-
-    return is_compiled;
+    let type = func.parm.type; // check argument type
+    // return a boolean array (whether to compile each argument)
+    return _check_arg_type(type, arg_list, node[0]);
 }
 
-function _check_arg_type(type, arg_list, f_name, f_line) {
+function _check_arg_type(type, arg_list, f_node) {
     let is_compiled = [];
 
+    // loop through all arguments
     for (let i = 0; i < arg_list.length; i++) {
-        // loop through all arguments
-        let j = i < type.length ? i : type.length - 1;
-        if (type[j]) {
-            if (type[j] === 'keylist') {
+        // get expected type (in any)
+        if (i < type.length) {
+            if (type[i] === 'keylist') {
                 // is a keyword list -> (a b c ...)
                 for (const key of arg_list[i]) {
                     if (key.type !== 'key') {
                         throw new Error(
-                            `[!] Function "${f_name}" expects a keyword list as an argument (or one of its arguments).\n    Check line ${f_line}.`
+                            `[!] Function "${f_node.value}" expects a keyword list as an argument (or one of its arguments).\n    Check function starting at line ${f_node.line}.`
                         );
                     }
                 }
             } else {
-                // is an atom
-                if (arg_list[i].type !== type[j]) {
+                //  is an atom
+                if (arg_list[i].type !== type[i]) {
                     throw new Error(
-                        `[!] Function "${f_name}" expects a "${type[j]}" as an argument (or one of its arguments).\n    Check line ${f_line}.`
+                        `[!] Function "${f_node.value}" expects a "${type[j]}" as an argument (or one of its arguments).\n    Check function starting at line ${f_node.line}.`
                     );
                 }
             }
@@ -68,11 +56,11 @@ function _check_arg_type(type, arg_list, f_name, f_line) {
     return is_compiled;
 }
 
-function _find_var(node, lib = STD_LIB) {
+function _find_var(node, short = SHORTCUTS, lib = STD_LIB) {
     let keyword = node.value;
     // check if it's a shortcut
-    if (keyword in SHORTCUTS) {
-        keyword = SHORTCUTS[keyword];
+    if (keyword in short) {
+        keyword = short[keyword];
     }
     // search in 'lib'
     if (keyword in lib) {

@@ -34,19 +34,20 @@ const SHORTCUTS = {
 const STD_LIB = {
     // GENERAL
     var: {
-        parm: { range: [1, 2], type: ['key', null], rev: false },
+        parm: { range: [1, 2], type: ['key'] },
         call: (args) => {
             let var_name = args[0].value;
-            let byc = args.length > 1 ? args[1] : 'ps r.nil\n';
-
+            let byc = args.length > 1 ? args[1] : 'ps nil\n';
             // set the variable
             byc += `st r.${var_name}\n`;
             return byc;
         },
     },
     func: {
-        parm: { range: [1, 3], type: ['key', 'keylist', null], rev: true },
-        call: (args) => {},
+        parm: { range: [1, 3], type: ['key', 'keylist'] },
+        call: (args) => {
+            // if name === '_' -> don't set variable
+        },
     },
     ask: {},
     loop: {},
@@ -54,7 +55,7 @@ const STD_LIB = {
     item: {},
     // I/O
     say: {
-        parm: { range: [0, Infinity], type: [null], rev: false },
+        parm: { range: false, type: [] },
         call: (args) => {
             let byc = '';
             for (const a of args) {
@@ -64,7 +65,7 @@ const STD_LIB = {
         },
     },
     lsn: {
-        parm: { range: [0, 0], type: [], rev: false },
+        parm: { range: [0, 0], type: [] },
         call: (args) => {
             return 'io std_in\n';
         },
