@@ -26,70 +26,64 @@ const SHORTCUTS = {
     '*': 'mul',
     '/': 'div',
     '%': 'mod',
+    // Utils
+    '++': 'inc',
+    '--': 'dec',
 };
 
 const STD_LIB = {
+    // CONSTANTS
+    nil: 'nil',
+    _0: 'bool_false',
+    _1: 'bool_true',
     // GENERAL
     var: {
-        // parm.range   : min and max number of arguments (default: [0, Infinity])
-        // parm.comp    : whether arguments have to be compiled
-        // parm.type    : if an argument isn't compiled, check its type
-        // parm.mod_env : whether it modifies 'env'
-        parm: {
-            range: [1, 2],
-            comp: [false, true],
-            type: ['key', null],
-            mod_env: true,
-        },
-        call: function (args, env) {
-            let var_name = args[0];
-            let byc = args.length > 1 ? args[1] : 'ps 0\n';
+        parm: { env: true, range: [1, 2], type: ['key', null], rev: false },
+        call: (args, env) => {
+            let var_name = args[0].value;
+            let byc = args.length > 1 ? args[1] : 'ps ref:nil\n';
+
             // check if the variable already exists
             for (let i = env.length - 1; i >= 0; i--) {
                 if (var_name in env[i]) {
                     // if found, modify its value
-                    byc += `md \$${var_name}\n`;
+                    byc += `md ref:${var_name}\n`;
                     return { byc: byc, env: env };
                 }
             }
-            // otherwise, add the variable to the current scope
-            env[env.length - 1][var_name] = null;
-            byc += `st \$${var_name}\n`;
+            // else add the variable to the current scope
+            env[env.length - 1][var_name] = var_name;
+            byc += `st ref:${var_name}\n`;
             return { byc: byc, env: env };
         },
     },
-    func: {},
+    func: {
+        parm: {
+            env: false,
+            range: [1, 3],
+            type: ['key', 'keylist', null],
+            rev: true,
+        },
+        call: (args) => {
+            return { byc: byc };
+        },
+    },
     ask: {},
     loop: {},
     list: {},
     item: {},
     // I/O
     say: {
-        parm: {
-            range: [],
-            comp: [true],
-            type: [],
-            mod_env: false,
-        },
-        call: function (args) {
-            let byc = [];
+        parm: { env: false, range: [0, Infinity], type: [null], rev: false },
+        call: (args) => {
+            let byc = '';
             for (const a of args) {
-                byc += a + 'io std_out\n';
+                byc += a + 'io std:out\n';
             }
             return { byc: byc };
         },
     },
-    lsn: {
-        parm: {
-            range: [0, 0],
-            comp: [],
-            type: [],
-            mod_env: false,
-        },
-        call: function (args) {
-            return { byc: 'io std_in\n' };
-        },
-    },
+    lsn: {},
 };
 
 module.exports = { SHORTCUTS, STD_LIB };

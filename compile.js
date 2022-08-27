@@ -4,122 +4,155 @@
 const SHORTCUTS = require('./std_lib.js').SHORTCUTS;
 const STD_LIB = require('./std_lib.js').STD_LIB;
 
-let env = [STD_LIB];
-
-function check_arg_num(node, min = 0, max = Infinity) {
-    let l = node.length - 1;
-    if (l < min || l > max) {
+function _check_parm(func, node) {
+    // check the number of arguments
+    let arg_num = node.length - 1;
+    let range = func.parm.range;
+    if (!(range[0] <= arg_num <= range[1])) {
         throw new Error(
-            `[!] Too few or too many arguments!\n` +
-                `    Check function "${node[0].value}" at index ${node[0].index}.`
+            `[!] Too few or too many arguments in function "${node[0].value}".\n    Check line ${node[0].line}.`
         );
     }
+
+    let arg_list = node.slice(1); // get the arguments
+    // reverse if the optional arguments are added first (not last)
+    if (func.parm.rev) {
+        arg_list.reverse();
+    }
+    // check argument type (if necessary)
+    let type = func.parm.type;
+    let is_compiled = _check_arg_type(
+        type,
+        arg_list,
+        node[0].value,
+        node[0].line
+    );
+    // reverse back (if necessary)
+    if (func.parm.rev) {
+        is_compiled.reverse();
+    }
+
+    return is_compiled;
 }
 
-function find_var(node) {
-    let symbol = node.value;
-    // if it's a shortcut, replace it by its label
-    if (symbol in SHORTCUTS) {
-        symbol = SHORTCUTS[symbol];
+function _check_arg_type(type, arg_list, f_name, f_line) {
+    let is_compiled = [];
+
+    for (let i = 0; i < arg_list.length; i++) {
+        // loop through all arguments
+        let j = i < type.length ? i : type.length - 1;
+        if (type[j]) {
+            if (type[j] === 'keylist') {
+                // is a keyword list -> (a b c ...)
+                for (const key of arg_list[i]) {
+                    if (key.type !== 'key') {
+                        throw new Error(
+                            `[!] Function "${f_name}" expects a keyword list as an argument (or one of its arguments).\n    Check line ${f_line}.`
+                        );
+                    }
+                }
+            } else {
+                // is an atom
+                if (arg_list[i].type !== type[j]) {
+                    throw new Error(
+                        `[!] Function "${f_name}" expects a "${type[j]}" as an argument (or one of its arguments).\n    Check line ${f_line}.`
+                    );
+                }
+            }
+            is_compiled.push(false);
+        } else {
+            is_compiled.push(true);
+        }
     }
-    // try to find the variable
+
+    return is_compiled;
+}
+
+function _find_var(node, env) {
+    let keyword = node.value;
+    // check if it's a shortcut
+    if (keyword in SHORTCUTS) {
+        keyword = SHORTCUTS[keyword];
+    }
+    // search in 'env'
     for (let i = env.length - 1; i >= 0; i--) {
-        if (symbol in env[i]) {
-            return env[i][symbol];
+        if (keyword in env[i]) {
+            return env[i][keyword];
         }
     }
     // error if not found
     throw new Error(
-        `[!] Variable "${symbol}" not found at index ${node.index}.`
+        `[!] Variable "${keyword}" was not found. Check line ${node.line}.`
     );
 }
 
-function compile(node, byc = '') {
+function _compile_branch(node, env) {
     if (Array.isArray(node)) {
         // is an expression
-        if (node.length === 0) {
-            // an empty expression returns 0
-            return 'ps 0\n';
-        }
-
         if (!Array.isArray(node[0]) && node[0].type === 'key') {
-            // if the first element is a keyword
+            // if the first element is a keyword,
             // check if it's a function
-            const f = find_var(node[0]);
-            if (f.hasOwnProperty('call')) {
-                // get information about the function's arguments
-                const arg_range = f.parm.range;
-                const arg_comp = f.parm.comp;
-                const arg_type = f.parm.type;
+            const func = _find_var(node[0], env);
+            if (func.hasOwnProperty('call')) {
+                // check function's parameters
+                const mod_env = func.parm.env;
+                const is_compiled = _check_parm(func, node);
 
-                // check the number of arguments
-                check_arg_num(node, arg_range[0], arg_range[1]);
-
-                // compile its arguments if needed
-                // or check the type instead
                 let args = [];
-
-                for (let i = 0; i < node.length - 1; i++) {
-                    // whether the argument will be compiled
-                    let arg_is_compiled =
-                        i < arg_comp.length
-                            ? arg_comp[i]
-                            : arg_comp[arg_comp.length - 1];
-
-                    if (arg_is_compiled) {
-                        // compile the argument
-                        args.push(compile(node[i + 1]));
+                for (let i = 0; i < is_compiled.length; i++) {
+                    if (is_compiled[i]) {
+                        args.push(_compile_branch(node[i + 1], env));
                     } else {
-                        // get the expected type
-                        let arg_expected_type =
-                            i < arg_type.length
-                                ? arg_type[i]
-                                : arg_type[arg_type.length - 1];
-                        if (node[i + 1].type !== arg_expected_type) {
-                            // type error
-                            throw new Error(
-                                `[!] An argument at function "${node[0].value}" doesn\'t match the expected type (${arg_expected_type}).` +
-                                    `    Check argument "${
-                                        node[i + 1].value
-                                    }" at index ${node[i + 1].index}.`
-                            );
-                        }
-                        args.push(node[i + 1].value);
+                        args.push(node[i + 1]);
                     }
                 }
 
-                // call the function and update 'byc' (and 'env' if necessary)
-                let r;
-                if (f.parm.mod_env) {
-                    r = f.call(args, env);
-                    env = r.env;
+                // call the function, updating 'env' if necessary
+                let result;
+                if (mod_env) {
+                    result = func.call(args, env);
+                    env = result.env;
                 } else {
-                    r = f.call(args);
+                    result = func.call(args);
                 }
-                byc += r.byc;
 
-                return byc;
+                return result.byc;
             }
         }
 
-        // if the first element is a nested expression,
+        // else if the first element is a nested expression,
         // an atom, or a non-function keyword
+        let byc = '';
         env.push({}); // new scope
         for (const expr of node) {
-            byc = compile(expr, byc);
+            byc += _compile_branch(expr, env);
         }
         env.pop(); // end scope
         return byc;
     } else {
         // is an atom
-        if (node.type === 'key') {
-            find_var(node);
-            return `ld \$${node.value}\n`;
+        switch (node.type) {
+            case 'key':
+                let value = _find_var(node, env);
+                return `ld ref:${value}\n`;
+            case 'str':
+            // TODO: store list of chars
+            default:
+                return `ps ${node.type}:${node.value}\n`;
         }
-        // TODO: use different 'push' modes
-        // according to the node.value's byte size
-        return `ps ${node.value}\n`;
     }
+}
+
+function compile(ast) {
+    let byc = '';
+    let env = [STD_LIB];
+
+    for (const b of ast) {
+        byc += _compile_branch(b, env);
+    }
+    byc += 'ht\n';
+
+    return byc;
 }
 
 module.exports = { compile };

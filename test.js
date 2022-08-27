@@ -20,14 +20,15 @@ let test3 = `(
 `;
 
 let test4 = `(
-    + 1 (+ 2 3)
+    ,+ 1 (+ 2 3)
+    (: r (: i))
 )`;
 
 let test5 = `(
     : r 3
     : n 2
     : test
-    : r 5
+    : r _1
     -> r n test
 )`;
 
@@ -36,8 +37,9 @@ function test(t) {
 
     r = lex(t);
     r = parse(r);
+    r = compile(r);
 
-    return JSON.stringify(r);
+    return r;
 }
 
-console.log(test(test4));
+console.log(test(test5));
