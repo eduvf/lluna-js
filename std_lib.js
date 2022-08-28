@@ -61,14 +61,14 @@ const STD_LIB = {
         },
     },
     ask: {
+        // {cond}
+        // jz 2
+        // jp then.length + 1
+        // {then}
+        // jp else.length
+        // {else}
         parm: { range: [2, Infinity], type: [] },
         call: (args) => {
-            // {cond}
-            // jz 2
-            // jp then.length + 1
-            // {then}
-            // jp else.length
-            // {else}
             let byc = '';
             // get the length of each block
             let len = [];
@@ -100,20 +100,18 @@ const STD_LIB = {
         },
     },
     loop: {
+        // jp body.length
+        // {body}
+        // {cond}
+        // jn -(cond.length + body.length)
         parm: { range: [2, 2], type: [] },
         call: (args) => {
-            // jp body.length
-            // {body}
-            // {cond}
-            // jn -(cond.length + body.length)
             let byc = '';
             // get the length of each block
             let cond_len = args[0].split(/\n/).length;
             let body_len = args[1].split(/\n/).length;
             // structure bytecode
-            byc += `jp ${body_len}\n`;
-            byc += args[1];
-            byc += args[0];
+            byc += `jp ${body_len}\n` + args[1] + args[0];
             byc += `jn -${cond_len + body_len - 2}\n`;
             return byc;
         },
@@ -153,16 +151,12 @@ const STD_LIB = {
     },
     lsn: {
         parm: { range: [0, 0], type: [] },
-        call: (args) => {
-            return 'io std_in\n';
-        },
+        call: (args) => 'io std_in\n',
     },
     // LOGIC
     not: {
         parm: { range: [1, 1], type: [] },
-        call: (args) => {
-            return args[0] + 'op not\n';
-        },
+        call: (args) => args[0] + 'op not\n',
     },
     and: _op_array('and'),
     or: _op_array('or'),
