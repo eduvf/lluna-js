@@ -68,7 +68,7 @@ const STD_LIB = {
         call: (args) => {
             // {cond}
             // jz 2
-            // jp then.length
+            // jp then.length + 1
             // {then}
             // jp else.length
             // {else}
@@ -102,7 +102,25 @@ const STD_LIB = {
             return byc;
         },
     },
-    loop: {},
+    loop: {
+        parm: { range: [2, 2], type: [] },
+        call: (args) => {
+            // jp body.length
+            // {body}
+            // {cond}
+            // jn -(cond.length + body.length)
+            let byc = '';
+            // get the length of each block
+            let cond_len = args[0].split(/\n/).length;
+            let body_len = args[1].split(/\n/).length;
+            // structure bytecode
+            byc += `jp ${body_len}\n`;
+            byc += args[1];
+            byc += args[0];
+            byc += `jn -${cond_len + body_len - 2}\n`;
+            return byc;
+        },
+    },
     list: {
         parm: { range: false, type: [] },
         call: (args) => {

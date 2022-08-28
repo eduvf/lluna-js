@@ -41,6 +41,12 @@ let test5 = `(
     -> r n test
 )`;
 
+let test6 = `(
+    @ (= (: i 0) 10) (
+        -> i
+    )
+)`;
+
 function test(t) {
     let r;
 
@@ -51,4 +57,4 @@ function test(t) {
     return r;
 }
 
-console.log(test(test4));
+console.log(test(test6));
