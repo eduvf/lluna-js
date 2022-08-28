@@ -16,11 +16,11 @@ const SHORTCUTS = {
     '!': 'not',
     '&': 'and',
     '|': 'or',
-    '=': 'eq',
+    '=': 'equ',
     '!=': 'neq',
-    '<': 'lt',
+    '<': 'lth',
     '<=': 'leq',
-    '>': 'mt',
+    '>': 'mth',
     '>=': 'meq',
     // Arithmetic
     '+': 'add',
@@ -158,6 +158,73 @@ const STD_LIB = {
         call: (args) => {
             return 'io std_in\n';
         },
+    },
+    // LOGIC
+    not: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    and: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    or: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    equ: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    neq: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    lth: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    leq: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    mth: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    meq: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    // ARITHMETIC
+    add: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    sub: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    mul: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    div: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    mod: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    // UTILS
+    inc: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
+    },
+    dec: {
+        parm: { range: [], type: [] },
+        call: (args) => {},
     },
 };
 
