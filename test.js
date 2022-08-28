@@ -44,7 +44,12 @@ let test5 = `(
 let test6 = `(
     @ (= (: i 0) 10) (
         -> i
+        (++ i)
     )
+)`;
+
+let test7 = `(
+    < 1 2 3
 )`;
 
 function test(t) {
@@ -57,4 +62,4 @@ function test(t) {
     return r;
 }
 
-console.log(test(test6));
+console.log(test(test5));

@@ -38,11 +38,8 @@ const STD_LIB = {
     var: {
         parm: { range: [1, 2], type: ['key'] },
         call: (args) => {
-            let var_name = args[0].value;
             let byc = args.length > 1 ? args[1] : 'ps nil\n';
-            // set the variable
-            byc += `st r.${var_name}\n`;
-            return byc;
+            return byc + `st r.${args[0].value}\n`;
         },
     },
     func: {
@@ -146,11 +143,12 @@ const STD_LIB = {
     say: {
         parm: { range: false, type: [] },
         call: (args) => {
-            let byc = '';
-            for (const a of args) {
-                byc += a + 'io std_out\n';
+            let arg_byc = '';
+            let ins_byc = 'io std_out\n'.repeat(args.length);
+            for (let i = args.length - 1; i >= 0; i--) {
+                arg_byc += args[i];
             }
-            return byc;
+            return arg_byc + ins_byc;
         },
     },
     lsn: {
@@ -161,71 +159,60 @@ const STD_LIB = {
     },
     // LOGIC
     not: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
+        parm: { range: [1, 1], type: [] },
+        call: (args) => {
+            return args[0] + 'op not\n';
+        },
     },
-    and: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    or: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    equ: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    neq: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    lth: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    leq: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    mth: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    meq: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
+    and: _op_array('and'),
+    or: _op_array('or'),
+    equ: {}, // TODO
+    neq: {}, // TODO
+    lth: {}, // TODO
+    leq: {}, // TODO
+    mth: {}, // TODO
+    meq: {}, // TODO
     // ARITHMETIC
-    add: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    sub: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    mul: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    div: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
-    mod: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
-    },
+    add: _op_array('add'),
+    sub: _op_array('sub'),
+    mul: _op_array('mul'),
+    div: _op_array('div'),
+    mod: _op_array('mod'),
     // UTILS
     inc: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
+        parm: { range: [1, 2], type: ['key'] },
+        call: (args) => {
+            let var_name = args[0].value;
+            if (args.length === 1) {
+                return `ps i.1\nld r.${var_name}\nop add\nst r.${var_name}\n`;
+            }
+            return args[1] + `ld r.${var_name}\nop add\nst r.${var_name}\n`;
+        },
     },
     dec: {
-        parm: { range: [], type: [] },
-        call: (args) => {},
+        parm: { range: [1, 2], type: ['key'] },
+        call: (args) => {
+            let var_name = args[0].value;
+            if (args.length === 1) {
+                return `ps i.1\nld r.${var_name}\nop sub\nst r.${var_name}\n`;
+            }
+            return args[1] + `ld r.${var_name}\nop sub\nst r.${var_name}\n`;
+        },
     },
 };
+
+function _op_array(ins) {
+    return {
+        parm: { range: [2, Infinity], type: [] },
+        call: (args) => {
+            let arg_byc = '';
+            let ins_byc = `op ${ins}\n`.repeat(args.length - 1);
+            for (let i = args.length - 1; i >= 0; i--) {
+                arg_byc += args[i];
+            }
+            return arg_byc + ins_byc;
+        },
+    };
+}
 
 module.exports = { SHORTCUTS, STD_LIB };
