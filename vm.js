@@ -5,8 +5,9 @@ function vm(text_bytecode) {
     // extract instructions & arguments
     let lines = text_bytecode.split('\n');
     let byc = [];
-    for (let i = 0; i < lines.length - 1; i++) {
-        byc.push(lines[i].split(' '));
+    for (let l of lines) {
+        // split by spaces and dots
+        byc.push(l.split(/[ .]/));
     }
 
     console.log(JSON.stringify(byc));
@@ -17,24 +18,17 @@ function vm(text_bytecode) {
 
     while (true) {
         const ins = byc[ip][0];
-        const arg = byc[ip][1] ? byc[ip][1] : null;
+        const typ = byc[ip].length > 1 ? byc[ip][1] : null;
+        const val = byc[ip].length > 2 ? byc[ip][2] : null;
 
         switch (ins) {
             case 'no': // no op
                 ip++;
             case 'ps': // push
-                stack.push(arg);
-                ip++;
-                break;
-            case 'pp': // pop
-                stack.pop();
-                ip++;
                 break;
             case 'ld': // load
                 break;
             case 'st': // store
-                break;
-            case 'md': // mod
                 break;
             case 'jp': // jump
                 break;

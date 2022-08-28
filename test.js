@@ -21,8 +21,16 @@ let test3 = `(
 `;
 
 let test4 = `(
-    ,+ 1 (+ 2 3)
-    (: r (: i))
+    (: age 20)
+    ? (< age 18) (
+        -> 'underage'
+    ) (< age 80) (
+        -> 'adult'
+    ) (< age 100) (
+        -> 'elder'
+    ) (
+        -> 'superman'
+    )
 )`;
 
 let test5 = `(
@@ -43,4 +51,4 @@ function test(t) {
     return r;
 }
 
-console.log(test(test2));
+console.log(test(test4));

@@ -20,6 +20,8 @@ const SHORTCUTS = {
     '!=': 'neq',
     '<': 'lt',
     '<=': 'leq',
+    '>': 'mt',
+    '>=': 'meq',
     // Arithmetic
     '+': 'add',
     '-': 'sub',
@@ -62,7 +64,43 @@ const STD_LIB = {
         },
     },
     ask: {
-        parm: {},
+        parm: { range: [2, Infinity], type: [] },
+        call: (args) => {
+            // {cond}
+            // jz 2
+            // jp then.length
+            // {then}
+            // jp else.length
+            // {else}
+            let byc = '';
+            // get the length of each block
+            let len = [];
+            args.forEach((a) => {
+                len.push(a.split(/\n/).length);
+            });
+            while (len.length > 0) {
+                // cond
+                len.shift();
+                byc += args.shift();
+                // then
+                byc += `jn 2\njp ${len.shift() + 1}\n`;
+                byc += args.shift();
+                // else
+                if (args.length >= 1) {
+                    // jump the remaining arguments
+                    let else_len = len.reduce((sum, val, i) => {
+                        return sum + val + (i % 2);
+                    });
+                    byc += `jp ${else_len}\n`;
+                    // if no condition is met, run the last argument (if any)
+                    if (len.length === 1) {
+                        len.shift();
+                        byc += args.shift();
+                    }
+                }
+            }
+            return byc;
+        },
     },
     loop: {},
     list: {
