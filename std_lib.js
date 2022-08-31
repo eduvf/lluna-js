@@ -160,12 +160,12 @@ const STD_LIB = {
     },
     and: _op_array('and'),
     or: _op_array('or'),
-    equ: {}, // TODO
-    neq: {}, // TODO
-    lth: {}, // TODO
-    leq: {}, // TODO
-    mth: {}, // TODO
-    meq: {}, // TODO
+    equ: _op_binary('equ'),
+    neq: _op_binary('neq'),
+    lth: _op_binary('lth'),
+    leq: _op_binary('leq'),
+    mth: _op_binary('mth'),
+    meq: _op_binary('meq'),
     // ARITHMETIC
     add: _op_array('add'),
     sub: _op_array('sub'),
@@ -200,11 +200,19 @@ function _op_array(ins) {
         parm: { range: [2, Infinity], type: [] },
         call: (args) => {
             let arg_byc = '';
-            let ins_byc = `op ${ins}\n`.repeat(args.length - 1);
             for (let i = args.length - 1; i >= 0; i--) {
                 arg_byc += args[i];
             }
-            return arg_byc + ins_byc;
+            return arg_byc + `op ${ins}\n`.repeat(args.length - 1);
+        },
+    };
+}
+
+function _op_binary(ins) {
+    return {
+        parm: { range: [2, 2], type: [] },
+        call: (args) => {
+            return args[1] + args[0] + `op ${ins}\n`;
         },
     };
 }
