@@ -1,6 +1,6 @@
 ![logo](logo.svg)
 
-# Lluna lang JS
+# (( lluna lang js ))
 
 ## What’s _Lluna_?
 
@@ -10,33 +10,13 @@
 
 ## Why JS?
 
-This JavaScript implementation is a proof of concept, the final version will be written in C and have a proper VM.
+This JavaScript implementation is a proof of concept, the final version will be written in C / Rust and have a proper VM.
 
 However, since it’s JavaScript, you can try this implementation of _Lluna lang_ right away in your browser.
 
-## TO-DO
+---
 
-Clean and simplify:
-
--   [x] lex (→ tokens)
-
--   [x] parse (→ AST)
-
--   [x] compile (→ bytecode)
-
-    -   [ ] fix arg push order
-
--   [ ] std_lib
-
--   [ ] vm (→ magic✨)
-
-Extra:
-
--   [ ] interactive web interpreter
-
--   [ ] tutorial / wiki
-
-## VM specs
+## VM specs (WIP - TO REVISE)
 
 ### Types
 
@@ -85,16 +65,16 @@ Extra:
 
 Other mnemonics:
 
--   **jz**: jump if zero
+- **jz**: jump if zero
 
--   **jn**: jump if not zero
+- **jn**: jump if not zero
 
--   **ls**: list start
+- **ls**: list start
 
--   **le**: list end
+- **le**: list end
 
--   **ll**: list load
+- **ll**: list load
 
--   **lm**: list modify
+- **lm**: list modify
 
--   **lr**: list remove
+- **lr**: list remove
