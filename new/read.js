@@ -4,59 +4,70 @@
  * func: lex & parse
  */
 
-function scan(i, string, check) {
-	while (i < string.length && check.test(string[i])) {
-		i++;
+function scan(i, s, check) {
+	let r = '';
+	while (i < s.length && check.test(s[i])) {
+		r += s[i++];
 	}
-	return i;
+	return [i, r];
 }
 
-function lex(string) {
+function lex(s) {
 	const NUM_REGEX = /^\d+\.?|\d*\.\d+$/;
 
-	let tokens = [];
-	for (i = 0; i < string.length; i++) {
-		let c = string[i];
+	let tok = [];
+	for (i = 0; i < s.length; i++) {
+		let c = s[i];
 		if (',' === c) {
 			// comment
-			while (i < string.length && string[i] !== '\n') {
+			while (i < s.length && s[i] !== '\n') {
 				i++;
 			}
 		} else if (';\n'.includes(c)) {
 			// new line
-			tokens.push('\n');
+			tok.push('\n');
 		} else if ('()'.includes(c)) {
 			// parenthesis
-			tokens.push(c);
+			tok.push(c);
+		} else if ('\'"`'.includes(c)) {
+			// string
+			let r = '';
+			do {
+				i++;
+				if (s[i - 1] !== '\\' && s[i] === c) {
+					break;
+				}
+				r += s[i];
+			} while (i < s.length);
+			tok.push(r);
 		} else if (/\d/.test(c)) {
 			// number
-			let from = i;
-			i = scan(i, string, /[\d\.]/) - 1;
-			n = string.slice(from, i + 1);
-			if (!NUM_REGEX.test(n)) {
+			let x = scan(i, s, /[\d\.]/);
+			i = x[0] - 1;
+			if (!NUM_REGEX.test(x[1])) {
 				console.error(`Failed to parse as number: '${n}'`);
 			}
-			tokens.push(Number(n));
+			tok.push(Number(x[1]));
 		} else if (/\S/.test(c)) {
 			// symbol
-			let from = i;
-			i = scan(i, string, /[^\s,;()]/) - 1;
-			tokens.push(string.slice(from, i + 1));
+			let x = scan(i, s, /[^\s,;()]/);
+			i = x[0] - 1;
+			tok.push(x[1]);
 		}
 	}
-	return tokens;
+	return tok;
 }
 
-function parse(tokens) {
+function parse(tok) {
 	// TODO: support multi-expr using \n
 
-	let t = tokens.shift();
+	let t = tok.shift();
 	if (t === '(') {
 		let expr = [];
-		while (tokens[0] !== ')') {
-			expr.push(parse(tokens));
+		while (tok[0] !== ')') {
+			expr.push(parse(tok));
 		}
-		tokens.shift(); // remove ')'
+		tok.shift(); // remove ')'
 		return expr;
 	} else if (t === ')') {
 		console.error("Parsing error: unexpected ')'");
