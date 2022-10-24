@@ -25,42 +25,89 @@ function lib() {
 		return x;
 	}
 
+	function replace_nested(from, to, array) {
+		for (let i in array) {
+			if (typeof array[i] == 'object') {
+				replace_nested(from, to, array[i]);
+			} else {
+				if (array[i] === from) array[i] = to;
+			}
+		}
+	}
+
 	let std = {
 		// variables & functions
 		':': (arg, env) => {
-			if (arg.length < 1 || arg.length > 2) {
-				throw `[!] Function ':' takes 1-2 arguments`;
-			}
-			let key = is_key(arg[0]);
-			let val = 1 < arg.length ? run(arg[1], env) : null;
-			// if it exists, update its value
-			for (let i = env.length - 1; i >= 0; i--) {
-				if (key in env[i]) {
-					env[i][key] = val;
-					return val;
+			let key = '';
+			let val = null;
+			loop: for (let i = 0; i < arg.length; i += 2) {
+				key = is_key(arg[i]);
+				val = i + 1 < arg.length ? run(arg[i + 1], env) : null;
+				// if it exists, update its value
+				for (let i = env.length - 1; i >= 0; i--) {
+					if (key in env[i]) {
+						env[i][key] = val;
+						break loop;
+					}
 				}
+				// otherwise create it in the current scope
+				env[env.length - 1][key] = val;
 			}
-			// otherwise create it in the current scope
-			env[env.length - 1][key] = val;
 			return val;
 		},
-		'~': (arg, env) => {},
+		'~': (arg, _) => {
+			let parm = arg.slice(0, -1).map((p) => is_key(p));
+			let body = arg.slice(-1);
+			return function (p, env) {
+				env.push({}); // new scope
+				// add the parameters' values to the current scope
+				for (let i in parm) {
+					env[env.length - 1][parm[i]] = i < p.length ? run(p[i], env) : null;
+				}
+				// execute the actual function
+				let r = run(body, env);
+				env.pop(); // end scope
+				return r;
+			};
+		},
+		'^': (arg, _) => {
+			let parm = arg.slice(0, -1).map((p) => is_key(p));
+			let body = arg.slice(-1);
+			return function (p, env) {
+				if (parm.length !== p.length) throw '[!] Macro args number mismatch';
+				// replace recursively each parameter within the body
+				for (let i in parm) {
+					replace_nested(parm[i], p[i], body);
+				}
+				return run(body, env);
+			};
+		},
 
 		// control flow
 		'?': (arg, env) => {
+			// alternate cond → then
 			for (let i = 0; i < arg.length; i += 2) {
 				let cond = run(arg[i], env);
 				if (cond) {
 					if (i + 1 < arg.length) {
 						return run(arg[i + 1], env);
-					} else {
-						return cond;
 					}
+					return cond;
 				}
 			}
 			return null;
 		},
-		'@': (arg, env) => {},
+		'@': (arg, env) => {
+			// while loop → 1st argument is condition
+			if (arg.length === 0) return null;
+			let r = null;
+			while (run(arg[0], env)) {
+				for (let a of arg.slice(1)) {
+					r = run(a, env);
+				}
+			}
+			return r;
+		},
 
 		// i/o
 		'->': (arg, env) => {
@@ -81,6 +128,7 @@ function lib() {
 		'&': (arg, env) => op(arg, env, (x, y) => typeof x == typeof y && x && y),
 		'|': (arg, env) => op(arg, env, (x, y) => typeof x == typeof y && (x || y)),
 		'=': (arg, env) => op(arg, env, (x, y) => (x === y ? y : false)),
+		'!=': (arg, env) => op(arg, env, (x, y) => (x !== y ? y : false)),
 		'<': (arg, env) =>
 			op(arg, env, (x, y) => (typeof x == typeof y && x < y ? y : false)),
 		'<=': (arg, env) =>
@@ -104,9 +152,7 @@ function lib() {
 function find(key, env) {
 	// search for a variable in 'env' from inner to outer scope
 	for (let i = env.length - 1; i >= 0; i--) {
-		if (key in env[i]) {
-			return env[i][key];
-		}
+		if (key in env[i]) return env[i][key];
 	}
 	throw `[!] Variable '${key}' not found`;
 }
@@ -120,9 +166,8 @@ function run(node, env = lib()) {
 			return node;
 		case 'object':
 			// empty expressions return null
-			if (node.length === 0) {
-				return null;
-			}
+			if (node.length === 0) return null;
+
 			if (typeof node[0] === 'string' && node[0][0] !== "'") {
 				let f = find(node[0], env);
 				if (f instanceof Function) {

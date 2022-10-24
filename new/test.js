@@ -35,9 +35,29 @@ t5 = `(
 	: b 2
 	-> (+ a b)
 	-> (? (0) ('no') (1) ('yes') 'alt')
+	: x 1 y 2 z 3
+	-> (- z y x) z y x
+)`;
+t6 = `(
+	: f (~ a b (+ a b))
+	-> (f 1 2)
+)`;
+t7 = `(
+	: n 0
+	@ (!= n 10) (-> n) (: n (+ n 1))
+)`;
+t8 = `(
+	: ++ (^ x (: x (+ x 1)))
+	(
+		: n 0
+		@ (<= n 5) (
+			-> n
+			++ n
+		)
+	)
 )`;
 
-let r = read(t5);
+let r = read(t8);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
