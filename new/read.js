@@ -4,20 +4,14 @@
  * func: lex & parse
  */
 
-function scan(i, s, check) {
-	let r = '';
-	while (i < s.length && check.test(s[i])) {
-		r += s[i++];
-	}
-	return [i, r];
-}
-
 function lex(s) {
-	const NUM_REGEX = /^\d+\.?|\d*\.\d+$/;
-
+	// split a string into tokens
 	let tok = [];
-	for (i = 0; i < s.length; i++) {
+
+	for (let i = 0; i < s.length; i++) {
+		// current character
 		let c = s[i];
+
 		if (',' === c) {
 			// comment
 			while (i < s.length && s[i] !== '\n') {
@@ -29,54 +23,102 @@ function lex(s) {
 		} else if ('()'.includes(c)) {
 			// parenthesis
 			tok.push(c);
-		} else if ('\'"`'.includes(c)) {
+		} else if ('\'"'.includes(c)) {
 			// string
 			let r = '';
-			do {
-				i++;
-				if (s[i - 1] !== '\\' && s[i] === c) {
-					break;
-				}
+			i++;
+			// advance until a non-escaped quote is found
+			while (!(s[i - 1] !== '\\' && s[i] === c)) {
 				r += s[i];
-			} while (i < s.length);
-			tok.push(r);
-		} else if (/\d/.test(c)) {
-			// number
-			let x = scan(i, s, /[\d\.]/);
-			i = x[0] - 1;
-			if (!NUM_REGEX.test(x[1])) {
-				console.error(`Failed to parse as number: '${n}'`);
+				i++;
+				if (i >= s.length) {
+					throw `[!] Unclosed string: '${r}'`;
+				}
 			}
-			tok.push(Number(x[1]));
+			tok.push("'" + r);
 		} else if (/\S/.test(c)) {
-			// symbol
-			let x = scan(i, s, /[^\s,;()]/);
-			i = x[0] - 1;
-			tok.push(x[1]);
+			// number or keyword
+			let r = c;
+			// advance until s[i] is not whitespace or a reserved character
+			while (i + 1 < s.length && /[^\s,;()'"]/.test(s[i + 1])) {
+				r += s[i + 1];
+				i++;
+			}
+			// check if it's a number
+			// otherwise, treat as keyword
+			if (/^\-?(\d+\.?|\d*\.\d+)$/.test(r)) {
+				tok.push(Number(r));
+			} else {
+				if (/^\d/.test(r)) {
+					throw `[!] A keyword cannot start with a number: '${r}'`;
+				}
+				tok.push(r);
+			}
 		}
 	}
 	return tok;
 }
 
 function parse(tok) {
-	// TODO: support multi-expr using \n
-
+	// parse a token list into an AST
 	let t = tok.shift();
+
 	if (t === '(') {
 		let expr = [];
-		while (tok[0] !== ')') {
-			expr.push(parse(tok));
+		if (tok[0] === '\n') {
+			// is multi-expression
+			let inner_expr = [];
+			tok.shift(); // remove '\n'
+			while (tok.length > 0 && tok[0] !== ')') {
+				if (tok[0] === '\n') {
+					tok.shift(); // remove '\n'
+					// if there's tokens in inner_expr,
+					// add them to expr and clear inner_expr
+					if (inner_expr.length > 0) {
+						expr.push(inner_expr.splice(0));
+					}
+				} else {
+					inner_expr.push(parse(tok));
+				}
+			}
+			// add last expression, if any
+			if (inner_expr.length > 0) {
+				expr.push(inner_expr);
+			}
+		} else {
+			// is expression
+			while (tok.length > 0 && tok[0] !== ')') {
+				if (tok[0] === '\n') {
+					// new lines are ignored
+					tok.shift();
+				} else {
+					expr.push(parse(tok));
+				}
+			}
+		}
+
+		if (tok[0] !== ')') {
+			throw '[!] Missing closing parenthesis';
 		}
 		tok.shift(); // remove ')'
 		return expr;
 	} else if (t === ')') {
-		console.error("Parsing error: unexpected ')'");
+		throw "[!] Parsing error: unexpected ')'";
 	}
 	return t;
 }
 
 function read(code) {
-	return parse(lex('(;' + code + ')'));
+	let tok = lex(code);
+	let ast = [];
+	let e;
+	while (tok.length > 0) {
+		e = parse(tok);
+		if (e[0] !== '\n') {
+			ast.push(e);
+		}
+	}
+	return ast;
 }
 
 module.exports = { read };
