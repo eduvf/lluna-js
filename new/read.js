@@ -48,10 +48,9 @@ function lex(s) {
 			// otherwise, treat as keyword
 			if (/^\-?(\d+\.?|\d*\.\d+)$/.test(r)) {
 				tok.push(Number(r));
+			} else if (/^\d/.test(r)) {
+				throw `[!] A keyword cannot start with a number: '${r}'`;
 			} else {
-				if (/^\d/.test(r)) {
-					throw `[!] A keyword cannot start with a number: '${r}'`;
-				}
 				tok.push(r);
 			}
 		}
@@ -67,23 +66,22 @@ function parse(tok) {
 		let expr = [];
 		if (tok[0] === '\n') {
 			// is multi-expression
-			let inner_expr = [];
 			tok.shift(); // remove '\n'
-			while (tok.length > 0 && tok[0] !== ')') {
-				if (tok[0] === '\n') {
-					tok.shift(); // remove '\n'
+			let inner_expr = [];
+			while (tok.length > 0) {
+				if (tok[0] === '\n' || tok[0] === ')') {
 					// if there's tokens in inner_expr,
 					// add them to expr and clear inner_expr
 					if (inner_expr.length > 0) {
 						expr.push(inner_expr.splice(0));
 					}
+					if (tok[0] === ')') {
+						break;
+					}
+					tok.shift(); // remove '\n'
 				} else {
 					inner_expr.push(parse(tok));
 				}
-			}
-			// add last expression, if any
-			if (inner_expr.length > 0) {
-				expr.push(inner_expr);
 			}
 		} else {
 			// is expression
@@ -110,15 +108,10 @@ function parse(tok) {
 
 function read(code) {
 	let tok = lex(code);
-	let ast = [];
-	let e;
-	while (tok.length > 0) {
-		e = parse(tok);
-		if (e[0] !== '\n') {
-			ast.push(e);
-		}
+	while (tok.length > 0 && tok[0] !== '(') {
+		tok.shift();
 	}
-	return ast;
+	return parse(tok);
 }
 
 module.exports = { read };

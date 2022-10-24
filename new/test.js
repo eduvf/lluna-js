@@ -5,6 +5,7 @@ t2 = `
 test vàr -5. a ('t')
 `;
 t3 = `
+(
 ~ f n (
 	: r
 	? (< 0 n) (
@@ -15,6 +16,13 @@ t3 = `
 )
 
 ! (f 5)
+)
+`;
+t4 = `
+Ignored header
+, make sure to comment out () before the main expr
+(+ 5 5)
+Ignored footer
 `;
 
-console.log(JSON.stringify(read(t3)));
+console.log(JSON.stringify(read(t4)));
