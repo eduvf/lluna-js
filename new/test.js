@@ -12,16 +12,17 @@ test vàr -5. a ('t')
 `;
 t3 = `
 (
-~ f n (
+: f (~ n (
 	: r
 	? (< 0 n) (
 		: r (* n (f (- n 1)))
 	)(
 		: r 1
 	)
-)
+))
 
--> (f 5)
+-> 'Fact 5:' (f 5)
+-> 'Fact 10:' (f 10)
 )
 `;
 t4 = `
@@ -57,7 +58,7 @@ t8 = `(
 	)
 )`;
 
-let r = read(t8);
+let r = read(t3);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
