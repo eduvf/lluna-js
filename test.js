@@ -1,65 +1,70 @@
-const lex = require('./lex.js').lex;
-const parse = require('./parse.js').parse;
-const compile = require('./compile.js').compile;
-const vm = require('./vm.js').vm;
+const read = require('./read').read;
+const run = require('./run').run;
+const readline = require('readline');
+const rl = readline.createInterface({
+	input: process.stdin,
+	output: process.stdout
+});
 
-let test1 = `
--> + 1 -.5 'hi!'6. à :v
+t1 = 'a ""1 2.5 3. (+ 1 2 (- 3))';
+t2 = `
+test vàr -5. a ('t')
 `;
+t3 = `
+(
+: f (~ n (
+	: r
+	? (< 0 n) (
+		: r (* n (f (- n 1)))
+	)(
+		: r 1
+	)
+))
 
-let test2 = `(
-~ f (n) (
-    : r (# 1 2 3 _t)
-    r
+-> 'Fact 5:' (f 5)
+-> 'Fact 10:' (f 10)
 )
--> (f 10)
-)`;
-
-let test3 = `(
-    say 'hi' ()
-    say 'bye')
 `;
-
-let test4 = `(
-    (: age 20)
-    ? (< age 18) (
-        -> 'underage'
-    ) (< age 80) (
-        -> 'adult'
-    ) (< age 100) (
-        -> 'elder'
-    ) (
-        -> 'superman'
-    )
+t4 = `
+Ignored header
+, make sure to comment out () before the main expr
+(+ 5 5)
+Ignored footer
+`;
+t5 = `(
+	: a 1
+	: b 2
+	-> (+ a b)
+	-> (? (0) ('no') (1) ('yes') 'alt')
+	: x 1 y 2 z 3
+	-> (- z y x) z y x
+)`;
+t6 = `(
+	: f (~ a b (+ a b))
+	-> (f 1 2)
+)`;
+t7 = `(
+	: n 0
+	@ (!= n 10) (-> n) (: n (+ n 1))
+)`;
+t8 = `(
+	: ++ (^ x (: x (+ x 1)))
+	(
+		: n 0
+		@ (<= n 5) (
+			-> n
+			++ n
+		)
+	)
 )`;
 
-let test5 = `(
-    : r 3
-    : n 'Hello あいう'
-    : test
-    : r _t
-    -> r n test
-)`;
+let r = read(t3);
+console.log(JSON.stringify(r));
+console.log(run(r));
 
-let test6 = `(
-    @ (= (: i 0) 10) (
-        -> i
-        (++ i)
-    )
-)`;
-
-let test7 = `(
-    < 1 2 3
-)`;
-
-function test(t) {
-    let r;
-
-    r = lex(t);
-    r = parse(r);
-    r = compile(r);
-
-    return r;
-}
-
-console.log(test(test5));
+// rl.question('> ', function (inp) {
+// 	let r = read('(' + inp + ')');
+// 	console.log(r);
+// 	console.log(run(r));
+// });
+rl.close();
