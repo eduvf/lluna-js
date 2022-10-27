@@ -1,5 +1,5 @@
 (
-
+, calculate recursively the factorial of a number
 : f (~ n (
 	: r
 	? (< 0 n) (
@@ -8,6 +8,7 @@
 		: r 1
 	)
 ))
+-> (f 5)
 -> (f 10)
-
+-> (f 20)
 )
