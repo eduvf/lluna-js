@@ -52,9 +52,10 @@
 				onkeydown="check_key(event)"></textarea>
 		</form>
 		<div style="display: flex">
-			<select style="width: 100%" disabled="disabled">
-				<option value="">hello, moon!</option>
-				<option value="">factorial</option>
+			<select onchange="example()" id="sel" style="width: 100%">
+				<option value="" disabled selected>Examples:</option>
+				<option value="hello">hello, moon!</option>
+				<option value="factorial">factorial</option>
 			</select>
 			<button style="width: 100%" onclick="clear_out()">&times;</button>
 			<button style="width: 100%" onclick="run_code()">&crarr;</button>
@@ -63,10 +64,19 @@
 		<pre>
             <code id="out"></code>
         </pre>
+
 		<script>
+			const sel = document.getElementById('sel');
 			const inp = document.getElementById('inp');
 			const out = document.getElementById('out');
 
+			function fetch_exec(url, f) {
+				fetch(url).then((response) => {
+					response.text().then((text) => {
+						f(text);
+					});
+				});
+			}
 			function check_key(event) {
 				if (event.keyCode === 13 && event.ctrlKey) {
 					run_code();
@@ -77,6 +87,14 @@
 			}
 			function clear_out() {
 				out.innerText = '';
+			}
+			function example() {
+				let opt = sel.value;
+				let url =
+					'https://raw.githubusercontent.com/eduvf/lluna-js/main/examples/' +
+					opt +
+					'.lluna';
+				fetch_exec(url, (t) => (inp.value = t));
 			}
 		</script>
 	</body>
