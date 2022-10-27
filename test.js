@@ -1,16 +1,16 @@
-const read = require('./read').read;
-const run = require('./run').run;
-const readline = require('readline');
+import { read } from './read.js';
+import { run } from './run.js';
+import readline from 'readline';
 const rl = readline.createInterface({
 	input: process.stdin,
 	output: process.stdout
 });
 
-t1 = 'a ""1 2.5 3. (+ 1 2 (- 3))';
-t2 = `
+let t1 = 'a ""1 2.5 3. (+ 1 2 (- 3))';
+let t2 = `
 test vàr -5. a ('t')
 `;
-t3 = `
+let t3 = `
 (
 : f (~ n (
 	: r
@@ -25,10 +25,10 @@ t3 = `
 -> 'Fact 10:' (f 10)
 )
 `;
-t4 = `
+let t4 = `
 (-> 'hi')
 `;
-t5 = `(
+let t5 = `(
 	: a 1
 	: b 2
 	-> (+ a b)
@@ -36,15 +36,15 @@ t5 = `(
 	: x 1 y 2 z 3
 	-> (- z y x) z y x
 )`;
-t6 = `(
+let t6 = `(
 	: f (~ a b (+ a b))
 	-> (f 1 2)
 )`;
-t7 = `(
+let t7 = `(
 	: n 0
 	@ (!= n 10) (-> n) (: n (+ n 1))
 )`;
-t8 = `(
+let t8 = `(
 	: ++ (^ x (: x (+ x 1)))
 	(
 		: n 0
@@ -54,7 +54,7 @@ t8 = `(
 		)
 	)
 )`;
-t9 = `(
+let t9 = `(
 	: ++ (^ x (: x (+ x 1)))
 	# 1 (+ 1 1) (+ 1 1 1)
 	: x (# 'h' 'e' 'l' 'l' 'o')

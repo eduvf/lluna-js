@@ -5,7 +5,7 @@
  */
 
 // std lib
-let lib = require('./lib').lib;
+import { lib } from './lib.js';
 
 function find(key, env) {
 	// search for a variable in 'env' from inner to outer scope
@@ -15,7 +15,7 @@ function find(key, env) {
 	throw `[!] Variable '${key}' not found`;
 }
 
-function run(node, env = lib(run)) {
+export function run(node, env = lib(run)) {
 	// interpret an AST within an environment
 	switch (typeof node) {
 		case 'string': // if it starts with ' it's a string
@@ -45,5 +45,3 @@ function run(node, env = lib(run)) {
 			return r;
 	}
 }
-
-module.exports = { run };

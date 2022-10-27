@@ -4,7 +4,7 @@
  * func: lib
  */
 
-function lib(run) {
+export function lib(run) {
 	// standard library for lluna
 
 	// helper functions:
@@ -160,5 +160,3 @@ function lib(run) {
 	};
 	return [std];
 }
-
-module.exports = { lib };

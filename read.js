@@ -106,12 +106,10 @@ function parse(tok) {
 	return t;
 }
 
-function read(code) {
+export function read(code) {
 	let tok = lex(code);
 	while (tok.length > 0 && tok[0] !== '(') {
 		tok.shift();
 	}
 	return parse(tok);
 }
-
-module.exports = { read };
