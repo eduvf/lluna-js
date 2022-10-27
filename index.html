@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8" />
+		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<title>&gt;_ lluna term js</title>
+		<link
+			rel="stylesheet"
+			href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+	</head>
+	<style>
+		:root {
+			--purple-dark: #220011;
+			--purple-mid: #331122;
+			--purple-light: #442233;
+			--orange: #ff9933;
+			--yellow: #ffff88;
+
+			/* Overwrite water.css */
+			--background-body: var(--purple-mid);
+			--background: var(--purple-dark);
+			--button-base: var(--purple-dark);
+			--button-hover: var(--purple-light);
+			--form-text: var(--yellow);
+			--text-bright: var(--yellow);
+			--links: var(--orange);
+			--focus: var(--orange);
+			--selection: var(--orange);
+			--border: var(--orange);
+		}
+	</style>
+	<body>
+		<header>
+			<img
+				src="https://raw.githubusercontent.com/eduvf/lluna-js/main/logo.svg"
+				width="200"
+				style="float: right" />
+			<h1>&gt;_ lluna term js</h1>
+			<a href="https://github.com/eduvf/lluna-js"
+				><sup>[go to project page]</sup></a
+			>
+		</header>
+
+		<hr />
+
+		<form>
+			<textarea
+				id="inp"
+				style="font-family: monospace"
+				placeholder="Enter your lluna code here..."
+				onkeydown="check_key(event)"></textarea>
+		</form>
+		<div style="display: flex">
+			<select style="width: 100%" disabled="disabled">
+				<option value="">hello, moon!</option>
+				<option value="">factorial</option>
+			</select>
+			<button style="width: 100%" onclick="clear_out()">&times;</button>
+			<button style="width: 100%" onclick="run_code()">&crarr;</button>
+		</div>
+
+		<pre>
+            <code id="out"></code>
+        </pre>
+		<script>
+			const inp = document.getElementById('inp');
+			const out = document.getElementById('out');
+
+			function check_key(event) {
+				if (event.keyCode === 13 && event.ctrlKey) {
+					run_code();
+				}
+			}
+			function run_code() {
+				out.innerText += inp.value + '\n';
+			}
+			function clear_out() {
+				out.innerText = '';
+			}
+		</script>
+	</body>
+</html>

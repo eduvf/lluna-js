@@ -26,10 +26,7 @@ t3 = `
 )
 `;
 t4 = `
-Ignored header
-, make sure to comment out () before the main expr
-(+ 5 5)
-Ignored footer
+(-> 'hi')
 `;
 t5 = `(
 	: a 1
@@ -68,7 +65,7 @@ t9 = `(
 	)
 )`;
 
-let r = read(t9);
+let r = read(t4);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
