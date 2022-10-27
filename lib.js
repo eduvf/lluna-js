@@ -39,7 +39,7 @@ function lib(run) {
 	}
 
 	let std = {
-		// variables & functions
+		// variables, functions & macros
 		':': (arg, env) => {
 			let key = '';
 			let val = null;
@@ -84,6 +84,15 @@ function lib(run) {
 				}
 				return run(body, env);
 			};
+		},
+
+		// lists
+		'#': (arg, env) => arg.map((a) => run(a, env)),
+		'.': (arg, env) => {
+			if (arg.length > 3) throw "[!] Too many arguments for '.' function";
+			let start = arg.length >= 2 ? run(arg[1], env) : undefined;
+			let end = arg.length >= 3 ? run(arg[2], env) : undefined;
+			return arg.length >= 1 ? run(arg[0], env).slice(start, end) : null;
 		},
 
 		// control flow

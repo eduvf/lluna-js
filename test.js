@@ -57,8 +57,18 @@ t8 = `(
 		)
 	)
 )`;
+t9 = `(
+	: ++ (^ x (: x (+ x 1)))
+	# 1 (+ 1 1) (+ 1 1 1)
+	: x (# 'h' 'e' 'l' 'l' 'o')
+	: i 0
+	@ (< i 5) (
+		-> (. x i (+ i 1))
+		++ i
+	)
+)`;
 
-let r = read(t3);
+let r = read(t9);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
