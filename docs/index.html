@@ -50,17 +50,17 @@
 				id="inp"
 				style="font-family: monospace"
 				placeholder="Enter your lluna code here..."
-				onkeydown="check_key(event)"></textarea>
+				onkeydown="window.check_key(event)"></textarea>
 		</form>
 		<div style="display: flex">
-			<select onchange="example()" id="sel" style="width: 100%">
+			<select onchange="window.example()" id="sel" style="width: 100%">
 				<option value="" disabled selected>Examples:</option>
 				<option value="hello">hello, moon!</option>
 				<option value="factorial">factorial</option>
 				<option value="loop">loop 0 to 10</option>
 			</select>
-			<button style="width: 100%" onclick="clear_out()">&times;</button>
-			<button style="width: 100%" onclick="run_code()">&crarr;</button>
+			<button style="width: 100%" onclick="window.clear_out()">&times;</button>
+			<button style="width: 100%" onclick="window.run_code()">&crarr;</button>
 		</div>
 
 		<pre>
@@ -68,9 +68,9 @@
         </pre>
 
 		<script type="module">
-			import { read } from '../read.js';
-			import { lib } from '../lib.js';
-			import { run } from '../run.js';
+			import { read } from './read.js';
+			import { lib } from './lib.js';
+			import { run } from './run.js';
 			const sel = document.getElementById('sel');
 			const inp = document.getElementById('inp');
 			const out = document.getElementById('out');
