@@ -17,6 +17,7 @@ function lex(s) {
 			while (i < s.length && s[i] !== '\n') {
 				i++;
 			}
+			i--;
 		} else if (';\n'.includes(c)) {
 			// new line
 			tok.push('\n');

@@ -65,7 +65,7 @@ let t9 = `(
 	)
 )`;
 
-let r = read(t4);
+let r = read(t8);
 console.log(JSON.stringify(r));
 console.log(run(r));
 

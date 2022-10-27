@@ -56,6 +56,7 @@
 				<option value="" disabled selected>Examples:</option>
 				<option value="hello">hello, moon!</option>
 				<option value="factorial">factorial</option>
+				<option value="loop">loop 0 to 10</option>
 			</select>
 			<button style="width: 100%" onclick="clear_out()">&times;</button>
 			<button style="width: 100%" onclick="run_code()">&crarr;</button>
@@ -65,10 +66,23 @@
             <code id="out"></code>
         </pre>
 
-		<script>
+		<script type="module">
+			import { read } from './read.js';
+			import { lib } from './lib.js';
+			import { run } from './run.js';
 			const sel = document.getElementById('sel');
 			const inp = document.getElementById('inp');
 			const out = document.getElementById('out');
+
+			// Change '->'
+			let env = lib(run);
+			env[0]['->'] = (arg, env) => {
+				let l = arg.map((a) => run(a, env));
+				// console.log(l.join(' '));
+				// change to:
+				out.innerText += l.join(' ') + '\n';
+				return l;
+			};
 
 			function fetch_exec(url, f) {
 				fetch(url).then((response) => {
@@ -77,25 +91,26 @@
 					});
 				});
 			}
-			function check_key(event) {
+			window.check_key = (event) => {
 				if (event.keyCode === 13 && event.ctrlKey) {
 					run_code();
 				}
-			}
-			function run_code() {
-				out.innerText += inp.value + '\n';
-			}
-			function clear_out() {
+			};
+			window.run_code = () => {
+				let r = run(read(inp.value), env);
+				out.innerText += '> ' + r + '\n';
+			};
+			window.clear_out = () => {
 				out.innerText = '';
-			}
-			function example() {
+			};
+			window.example = () => {
 				let opt = sel.value;
 				let url =
 					'https://raw.githubusercontent.com/eduvf/lluna-js/main/examples/' +
 					opt +
 					'.lluna';
 				fetch_exec(url, (t) => (inp.value = t));
-			}
+			};
 		</script>
 	</body>
 </html>
