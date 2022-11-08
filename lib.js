@@ -128,6 +128,11 @@ export function lib(run) {
 			return l;
 		},
 
+		// return
+		'::': (arg, env) => {
+			return arg.map((a) => run(a, env));
+		},
+
 		// logic
 		'!': (arg, env) => {
 			if (arg.length > 1) {

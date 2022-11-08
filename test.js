@@ -26,7 +26,10 @@ let t3 = `
 )
 `;
 let t4 = `
-(-> 'hi')
+(
+	: f (~ x (:: x))
+	-> (f 10)
+)
 `;
 let t5 = `(
 	: a 1
@@ -65,7 +68,7 @@ let t9 = `(
 	)
 )`;
 
-let r = read(t8);
+let r = read(t4);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
