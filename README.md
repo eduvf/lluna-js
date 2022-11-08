@@ -14,6 +14,10 @@ This JavaScript implementation is a proof of concept, the final version will be 
 
 However, since it’s JavaScript, you can try this implementation of _Lluna lang_ right away in your browser.
 
+## TO-DO
+
+- [ ] Isolate function / macro scopes
+
 ## Example
 
 ```
