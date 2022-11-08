@@ -130,7 +130,7 @@ export function lib(run) {
 
 		// return
 		'::': (arg, env) => {
-			return arg.map((a) => run(a, env));
+			return arg.length == 1 ? run(arg[0], env) : arg.map((a) => run(a, env));
 		},
 
 		// logic

@@ -68,7 +68,65 @@ let t9 = `(
 	)
 )`;
 
-let r = read(t4);
+let test = `
+(
+	: fib (~ n (
+		? (< n 2) (:: n) (
+			: prev 1
+			: curr 1
+			: i 2
+			@ (< i n) (
+				: prev curr
+				: curr (+ curr prev)
+				: i (+ i 1)
+				:: curr
+			)
+		)
+	))
+	
+	-> (fib 0)
+	-> (fib 1)
+	-> (fib 2)
+	-> (fib 3)
+	-> (fib 4)
+	-> (fib 5)
+	)
+`;
+
+let fib_test = `
+(
+	,,, recursive (fix?)
+	: fib_recurs (~ n (? (< n 2) (
+		:: n
+	)(
+		+ (fib_recurs (- n 1)) (fib_recurs (- n 2))
+	)))
+
+	,,, iterative
+	: fib_iter (~ n (
+		: a 0
+		: b 1
+		: i 1
+		@ (< i n) (
+			: sum (+ a b)
+			: a b
+			: b sum
+			: i (+ i 1)
+		)
+		:: a
+	))
+
+	(
+		: i 0
+		@ (< i 10) (
+			-> 'Recursive:' (fib_recurs i) 'Iterative:' (fib_iter i)
+			: i (+ i 1)
+		)
+	)
+)
+`;
+
+let r = read(fib_test);
 console.log(JSON.stringify(r));
 console.log(run(r));
 
