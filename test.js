@@ -95,7 +95,7 @@ let test = `
 
 let fib_test = `
 (
-	,,, recursive (fix?)
+	,,, recursive
 	: fib_recurs (~ n (? (< n 2) (
 		:: n
 	)(
@@ -106,12 +106,12 @@ let fib_test = `
 	: fib_iter (~ n (
 		: a 0
 		: b 1
-		: i 1
-		@ (< i n) (
+		: k 0
+		@ (< k n) (
 			: sum (+ a b)
 			: a b
 			: b sum
-			: i (+ i 1)
+			: k (+ k 1)
 		)
 		:: a
 	))
@@ -119,7 +119,7 @@ let fib_test = `
 	(
 		: i 0
 		@ (< i 10) (
-			-> 'Recursive:' (fib_recurs i) 'Iterative:' (fib_iter i)
+			-> 'i =' i 'Recursive:' (fib_recurs i) 'Iterative:' (fib_iter i)
 			: i (+ i 1)
 		)
 	)
