@@ -122,11 +122,12 @@ export function lib(run) {
 		},
 		'@': (arg, env) => {
 			// while loop → 1st argument is condition
-			if (arg.length === 0) return null;
 			let r = null;
-			while (run(arg[0], env)) {
-				for (let a of arg.slice(1)) {
-					r = run(a, env);
+			if (arg.length > 0) {
+				while (run(arg[0], env)) {
+					for (let a of arg.slice(1)) {
+						r = run(a, env);
+					}
 				}
 			}
 			return r;
