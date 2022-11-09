@@ -96,9 +96,7 @@ let test = `
 let fib_test = `
 (
 	,,, recursive
-	: fib_recurs (~ n (? (< n 2) (
-		:: n
-	)(
+	: fib_recurs (~ n (? (< n 2) n (
 		+ (fib_recurs (- n 1)) (fib_recurs (- n 2))
 	)))
 
@@ -113,7 +111,7 @@ let fib_test = `
 			: b sum
 			: k (+ k 1)
 		)
-		:: a
+		a
 	))
 
 	(
