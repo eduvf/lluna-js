@@ -40,6 +40,17 @@ export function lib(run) {
 
 	let std = {
 		// variables, functions & macros
+		'::': (arg, env) => {
+			// explicit variable declaration
+			let key = '';
+			let val = null;
+			for (let i = 0; i < arg.length; i += 2) {
+				key = is_key(arg[i]);
+				val = i + 1 < arg.length ? run(arg[i + 1], env) : null;
+				env[env.length - 1][key] = val;
+			}
+			return val;
+		},
 		':': (arg, env) => {
 			let key = '';
 			let val = null;
@@ -111,11 +122,12 @@ export function lib(run) {
 		},
 		'@': (arg, env) => {
 			// while loop → 1st argument is condition
-			if (arg.length === 0) return null;
 			let r = null;
-			while (run(arg[0], env)) {
-				for (let a of arg.slice(1)) {
-					r = run(a, env);
+			if (arg.length > 0) {
+				while (run(arg[0], env)) {
+					for (let a of arg.slice(1)) {
+						r = run(a, env);
+					}
 				}
 			}
 			return r;
@@ -126,11 +138,6 @@ export function lib(run) {
 			let l = arg.map((a) => run(a, env));
 			console.log(l.join(' '));
 			return l;
-		},
-
-		// return
-		'::': (arg, env) => {
-			return arg.length == 1 ? run(arg[0], env) : arg.map((a) => run(a, env));
 		},
 
 		// logic

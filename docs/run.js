@@ -32,7 +32,9 @@ export function run(node, env = lib(run)) {
 					// is a function expression
 					return f(node.slice(1), env);
 				}
-				throw `[!] Variable '${node[0]}' is not a function`;
+				return node.length == 1
+					? find(node[0], env)
+					: node.map((x) => find(x, env));
 			}
 			// is a multi-expression
 			// run each expression within the same scope
