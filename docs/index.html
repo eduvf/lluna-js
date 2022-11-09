@@ -37,7 +37,10 @@
 				src="https://raw.githubusercontent.com/eduvf/lluna-js/main/logo.svg"
 				width="200"
 				style="float: right" />
-			<h1>&gt;_ lluna term js</h1>
+			<h1>
+				&gt;_ lluna term js
+				<sub style="font-size: small">&beta; version</sub>
+			</h1>
 			<a href="https://github.com/eduvf/lluna-js"
 				><sup>[go to project page]</sup></a
 			>
@@ -54,14 +57,19 @@
 		</form>
 		<div style="display: flex">
 			<select onchange="window.example()" id="sel" style="width: 100%">
-				<option value="" disabled selected>Examples:</option>
+				<option value="" disabled selected>examples:</option>
 				<option value="hello">hello, moon!</option>
 				<option value="factorial">factorial</option>
 				<option value="fibonacci">fibonacci</option>
 				<option value="loop">loop 0 to 10</option>
 			</select>
-			<button style="width: 100%" onclick="window.clear_out()">clear</button>
-			<button style="width: 100%" onclick="window.run_code()">&crarr;</button>
+			<button style="width: 100%" onclick="window.clear_in()">
+				clear code
+			</button>
+			<button style="width: 100%" onclick="window.clear_out()">
+				clear output
+			</button>
+			<button style="width: 100%" onclick="window.run_code()">run</button>
 		</div>
 
 		<pre>
@@ -101,6 +109,9 @@
 			window.run_code = () => {
 				let r = run(read(inp.value), env);
 				out.innerText += '> ' + r + '\n';
+			};
+			window.clear_in = () => {
+				inp.value = '';
 			};
 			window.clear_out = () => {
 				out.innerText = '';
