@@ -5,7 +5,7 @@
  */
 
 // std lib
-import { lib } from './lib.js';
+import { lib } from './lib.mjs';
 
 function find(key, env) {
 	// search for a variable in 'env' from inner to outer scope

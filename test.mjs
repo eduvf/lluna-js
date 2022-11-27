@@ -1,5 +1,5 @@
-import { read } from './read.js';
-import { run } from './run.js';
+import { read } from './read.mjs';
+import { run } from './run.mjs';
 import readline from 'readline';
 const rl = readline.createInterface({
 	input: process.stdin,
