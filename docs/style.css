@@ -1,0 +1,20 @@
+:root {
+    --purple-dark: #220011;
+    --purple-mid: #331122;
+    --purple-light: #442233;
+    --orange: #ff9933;
+    --yellow: #ffff88;
+
+    /* Overwrite water.css */
+    --background-body: var(--purple-mid);
+    --background: var(--purple-dark);
+    --button-base: var(--purple-dark);
+    --button-hover: var(--purple-light);
+    --form-text: var(--yellow);
+    --text-bright: var(--yellow);
+    --code: var(--yellow);
+    --links: var(--orange);
+    --focus: var(--orange);
+    --selection: var(--orange);
+    --border: var(--orange);
+}
