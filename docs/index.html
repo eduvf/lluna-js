@@ -27,34 +27,26 @@
 
 		<hr />
 
-		<form>
-			<textarea
-				id="inp"
-				style="font-family: monospace"
-				placeholder="Enter your lluna code here..."
-				onkeydown="window.check_key(event)"></textarea>
-		</form>
-		<div style="display: flex">
-			<select onchange="window.example()" id="sel" style="width: 100%">
+		<div class="editor"></div>
+
+		<div style="display: flex; justify-content: center">
+			<select onchange="window.loadExample()" id="select">
 				<option value="" disabled selected>examples:</option>
 				<option value="hello">hello, moon!</option>
 				<option value="factorial">factorial</option>
 				<option value="fibonacci">fibonacci</option>
 				<option value="loop">loop 0 to 10</option>
 			</select>
-			<button style="width: 100%" onclick="window.clear_in()">
-				clear code
-			</button>
-			<button style="width: 100%" onclick="window.clear_out()">
-				clear output
-			</button>
-			<button style="width: 100%" onclick="window.run_code()">run</button>
+			<button onclick="window.clearEditor()">clear code</button>
+			<button onclick="window.clearOutput()">clear output</button>
+			<button onclick="window.runCode()">run</button>
 		</div>
 
 		<pre>
-            <code id="out"></code>
+            <code id="output"></code>
         </pre>
 
+		<script src="./editor.js" type="module"></script>
 		<script src="./script.js" type="module"></script>
 	</body>
 </html>

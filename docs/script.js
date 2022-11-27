@@ -1,47 +1,85 @@
+import { CodeJar } from '//unpkg.com/codejar';
+
 import { read } from './lluna/read.js';
 import { lib } from './lluna/lib.js';
 import { run } from './lluna/run.js';
-const sel = document.getElementById('sel');
-const inp = document.getElementById('inp');
-const out = document.getElementById('out');
 
-// Change '->'
+const select = document.getElementById('select');
+const editor = document.querySelector('.editor');
+const output = document.getElementById('output');
+
+////////////////////////////////////////////////////////////////////////////////
+// Code editor & syntax highlighting
+////////////////////////////////////////////////////////////////////////////////
+
+const highlight = (editor) => {
+	let code = editor.textContent;
+
+	code = code
+		.replace(
+			/(\(\s*|^\s*)([^\s\(\)\,]+)/gm,
+			'$1<span style="font-weight: bold; color: var(--orange);">$2</span>'
+		)
+		.replace(
+			/('.*?'|\d*\.\d+|\b\d+\.?)/g,
+			'<span style="font-weight: bold;">$1</span>'
+		)
+		.replace(
+			/(,[^'\n]*$)/gm,
+			'<span style="font-style: italic; color: var(--purple-lighter);">$1</span>'
+		);
+
+	editor.innerHTML = code;
+};
+
+let jar = CodeJar(editor, highlight);
+// Set default message
+jar.updateCode(', start writing lluna code or select an example');
+
+////////////////////////////////////////////////////////////////////////////////
+// Load example
+////////////////////////////////////////////////////////////////////////////////
+
+window.loadExample = () => {
+	let scriptName = select.value;
+	let url =
+		'https://raw.githubusercontent.com/eduvf/lluna-js/main/examples/' +
+		scriptName +
+		'.lluna';
+
+	// fetch code
+	fetch(url).then((response) => {
+		response.text().then((text) => {
+			jar.updateCode(text);
+		});
+	});
+};
+
+////////////////////////////////////////////////////////////////////////////////
+// Clear buttons
+////////////////////////////////////////////////////////////////////////////////
+
+window.clearEditor = () => {
+	jar.updateCode('');
+};
+window.clearOutput = () => {
+	output.innerText = '(( lluna lang )) beta\nOutput:\n';
+};
+clearOutput();
+
+////////////////////////////////////////////////////////////////////////////////
+// Run code
+////////////////////////////////////////////////////////////////////////////////
+
+// Modify (->) to print to output
 let env = lib(run);
 env[0]['->'] = (arg, env) => {
 	let l = arg.map((a) => run(a, env));
 	// console.log(l.join(' '));
-	// change to:
-	out.innerText += l.join(' ') + '\n';
+	output.innerText += '> ' + l.join(' ') + '\n';
 	return l;
 };
-
-function fetch_exec(url, f) {
-	fetch(url).then((response) => {
-		response.text().then((text) => {
-			f(text);
-		});
-	});
-}
-window.check_key = (event) => {
-	if (event.keyCode === 13 && event.ctrlKey) {
-		run_code();
-	}
-};
-window.run_code = () => {
-	let r = run(read(inp.value), env);
-	out.innerText += '> ' + r + '\n';
-};
-window.clear_in = () => {
-	inp.value = '';
-};
-window.clear_out = () => {
-	out.innerText = '';
-};
-window.example = () => {
-	let opt = sel.value;
-	let url =
-		'https://raw.githubusercontent.com/eduvf/lluna-js/main/examples/' +
-		opt +
-		'.lluna';
-	fetch_exec(url, (t) => (inp.value = t));
+window.runCode = () => {
+	output.innerText += '\n';
+	run(read(jar.toString()), env);
 };
