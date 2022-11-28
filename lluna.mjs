@@ -37,7 +37,7 @@ function lex(s) {
 				c = ';';
 				line++;
 			}
-			tokens.push([c, line]);
+			tokens.push(c);
 		} else if (c === "'") {
 			// string
 			let from = i;
@@ -49,7 +49,7 @@ function lex(s) {
 					line++;
 				}
 			}
-			tokens.push(['s', line, s.slice(from + 1, i)]);
+			tokens.push({ type: 's', val: s.slice(from + 1, i), line: line });
 		} else if (SYMBOL.test(c)) {
 			// number or keyword
 			let sym = c;
@@ -59,9 +59,9 @@ function lex(s) {
 			// check if it's a number. otherwise, it's a keyword
 			// as long as it doesn't start with a number
 			if (/^-?(\d+\.?|\d*\.\d+)$/.test(sym)) {
-				tokens.push(['n', line, Number(sym)]);
+				tokens.push({ type: 'n', val: Number(sym), line: line });
 			} else if (/[^\d]/.test(sym[0])) {
-				tokens.push(['k', line, sym]);
+				tokens.push({ type: 'k', val: sym, line: line });
 			} else {
 				throw `[!] Could not understand symbol '${sym}' at line ${line}.`;
 			}
@@ -80,17 +80,17 @@ function lex(s) {
 
 function parse(tokens) {
 	let t = tokens.shift();
-	// the structure of tokens is an array:
-	// [type, line, value*]
-	// * optional if type is not 's', 'n' or 'k'
-	if (t[0] === '(') {
+	// strings, numbers and keywords take the following structure:
+	// { type: X, val: Y, line: Z}
+	// everything else is just a string
+	if (t === '(') {
 		let expr = [];
-		if (tokens.hasOwnProperty(0) ? tokens[0][0] === ';' : false) {
+		if (tokens[0] === ';') {
 			// a new line begins a multi-expression
 			tokens.shift(); // remove new line
 			let inner = []; // current inner expression
-			while (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
-				if (tokens.hasOwnProperty(0) ? tokens[0][0] == ';' : false) {
+			while (tokens[0] !== ')') {
+				if (tokens[0] == ';') {
 					// if there's tokens in 'inner',
 					// add them to 'expr' and clear 'inner'
 					if (inner.length > 0) expr.push(inner.splice(0));
@@ -104,8 +104,8 @@ function parse(tokens) {
 			if (inner.length > 0) expr.push(inner.splice(0));
 		} else {
 			// is a single expression
-			while (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
-				if (tokens.hasOwnProperty(0) ? tokens[0][0] === ';' : false) {
+			while (tokens[0] !== ')') {
+				if (tokens[0] === ';') {
 					tokens.shift(); // ignore new lines
 				} else {
 					expr.push(parse(tokens));
@@ -114,14 +114,31 @@ function parse(tokens) {
 			}
 		}
 
-		if (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
-			throw `[!] Missing closing parenthesis.`;
+		if (tokens[0] !== ')') {
+			throw '[!] Missing closing parenthesis.';
 		}
 		tokens.shift(); // remove ')'
 		return expr;
-	} else if (t[0] === ')') {
-		throw `[!] Unexpected closing parenthesis at line ${t[1]}.`;
+	} else if (t === ')') {
+		throw '[!] Unexpected closing parenthesis.';
 	}
 	// is an atom
 	return t;
 }
+
+let t3 = `(
+: f (~ n (
+	: r
+	? (< 0 n) (
+		: r (* n (f (- n 1)))
+	)(
+		: r 1
+	)
+))
+
+-> 'Fact 5:' (f 5)
+-> 'Fact 10:' (f 10)
+)
+`;
+
+console.log(parse(lex(t3)));
