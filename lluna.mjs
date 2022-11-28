@@ -164,7 +164,7 @@ function exec(node, env) {
 			return func(node.slice(1), env);
 		}
 	}
-	// else, each element individually (and return the last one)
+	// else, execute each element individually (and return the last one)
 	let r = null;
 	for (let e of node) {
 		r = exec(e, env);
