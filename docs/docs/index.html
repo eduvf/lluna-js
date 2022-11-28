@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html data-theme="dark" lang="en">
+	<head>
+		<meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+		<meta charset="utf-8" />
+		<meta name="viewport" content="width=device-width,initial-scale=1" />
+		<meta name="theme-color" content="#11191f" />
+
+		<title>lluna docs</title>
+
+		<link rel="stylesheet" href="assets/pico.min.css" />
+		<link rel="stylesheet" href="assets/pico.docs.min.css" />
+	</head>
+	<style>
+		:root:not([data-theme='light']) {
+			--primary: #f93;
+			--secondary: #ff8;
+			--background-color: #201;
+			--nav-background-color: #312;
+		}
+	</style>
+	<body>
+		<nav class="container-fluid">
+			<ul>
+				<li>
+					<img
+						src="https://raw.githubusercontent.com/eduvf/lluna-js/main/logo.svg"
+						width="200" />
+				</li>
+				<li>Documentation</li>
+			</ul>
+			<ul>
+				<li>
+					<a href="#" class="secondary">Examples</a>
+				</li>
+				<li><a href="#" class="secondary">Docs</a></li>
+			</ul>
+		</nav>
+		<main class="container" id="docs">
+			<aside>
+				<nav>
+					<ul>
+						<li>
+							<a href="#" id="start-link" class="secondary" aria-current="page"
+								>Usage</a
+							>
+						</li>
+						<li>
+							<a href="#" id="themes-link" class="secondary">Themes</a>
+						</li>
+						<li>
+							<a href="#" id="customization-link" class="secondary"
+								>Customization</a
+							>
+						</li>
+						<li>
+							<a href="#" id="classless-link" class="secondary"
+								>Class-less version</a
+							>
+						</li>
+						<li>
+							<a href="#" id="rtl-link" class="secondary">RTL</a>
+						</li>
+					</ul>
+				</nav>
+				<script>
+					const activeLink = document.querySelector('aside a#start-link'),
+						parentAccordion = activeLink.closest('details');
+					activeLink.setAttribute('aria-current', 'page'),
+						parentAccordion.setAttribute('open', 'true');
+				</script>
+			</aside>
+			<div role="document">
+				<section id="start">
+					<div class="headings">
+						<h1>Usage</h1>
+						<h2>Works without package manager or dependencies 🙂!</h2>
+					</div>
+					<p>There are 4 ways to get started with pico.css:</p>
+				</section>
+				<footer>
+					<hr />
+					<p>
+						<small>Code licensed <a href="#" class="secondary">MIT</a></small>
+					</p>
+				</footer>
+			</div>
+		</main>
+	</body>
+</html>
