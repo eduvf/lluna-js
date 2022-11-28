@@ -3,6 +3,12 @@
  * repo: github.com/eduvf/lluna-js
  * auth: github.com/eduvf
  * desc: interpreter for the lluna programming language using JavaScript
+ *
+ * Structure of this file:
+ * - lex()
+ * - parse()
+ * - [export] read() -> combines lex() and parse()
+ * - [export] exec()
  */
 
 ////////////////////////////////////////////////////////////////
@@ -62,4 +68,60 @@ function lex(s) {
 		}
 	}
 	return tokens;
+}
+
+////////////////////////////////////////////////////////////////
+/* PARSE
+ * the parser takes an array of tokens as an argument and
+ * returns an AST in the form of nested expressions
+ * Attention! parse() modifies the original array, so you'll
+ * have to copy it first if you want to keep it for some reason
+ */
+
+function parse(tokens) {
+	let t = tokens.shift();
+	// the structure of tokens is an array:
+	// [type, line, value*]
+	// * optional if type is not 's', 'n' or 'k'
+	if (t[0] === '(') {
+		let expr = [];
+		if (tokens.hasOwnProperty(0) ? tokens[0][0] === ';' : false) {
+			// a new line begins a multi-expression
+			tokens.shift(); // remove new line
+			let inner = []; // current inner expression
+			while (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
+				if (tokens.hasOwnProperty(0) ? tokens[0][0] == ';' : false) {
+					// if there's tokens in 'inner',
+					// add them to 'expr' and clear 'inner'
+					if (inner.length > 0) expr.push(inner.splice(0));
+					tokens.shift(); // remove new line
+				} else {
+					inner.push(parse(tokens));
+				}
+				if (tokens.length === 0) break;
+			}
+			// add last 'inner' to 'expr' if necessary
+			if (inner.length > 0) expr.push(inner.splice(0));
+		} else {
+			// is a single expression
+			while (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
+				if (tokens.hasOwnProperty(0) ? tokens[0][0] === ';' : false) {
+					tokens.shift(); // ignore new lines
+				} else {
+					expr.push(parse(tokens));
+				}
+				if (tokens.length === 0) break;
+			}
+		}
+
+		if (tokens.hasOwnProperty(0) ? tokens[0][0] !== ')' : true) {
+			throw `[!] Missing closing parenthesis.`;
+		}
+		tokens.shift(); // remove ')'
+		return expr;
+	} else if (t[0] === ')') {
+		throw `[!] Unexpected closing parenthesis at line ${t[1]}.`;
+	}
+	// is an atom
+	return t;
 }
