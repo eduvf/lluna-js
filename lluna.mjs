@@ -135,4 +135,45 @@ function parse(tokens) {
  * executes the expression
  */
 
-function exec(node, env = lib(exec)) {}
+// Helper to find variables within an env
+function find(atom, env) {
+	// search from inside out
+	for (let i = env.length - 1; i >= 0; i--) {
+		if (atom.val in env[i]) return env[i][atom.val];
+	}
+	throw `[!] Empty variable '${atom.val}' at line ${atom.line}.`;
+}
+
+function exec(node, env) {
+	// check for atoms (if it's not an atom, node.type will return undefined)
+	if (node.type === 's' || node.type === 'n') {
+		return node.val;
+	} else if (node.type === 'k') {
+		return find(node, env);
+	}
+	// else, is an expression
+
+	// empty expressions return null
+	if (node.length === 0) return null;
+
+	if (node[0].type === 'k') {
+		// if first element is a keyword
+		let func = find(node[0], env);
+		if (func instanceof Function) {
+			// is a function expression
+			return func(node.slice(1), env);
+		}
+	}
+	// else, each element individually (and return the last one)
+	return node.reduce((_, x) => exec(x, env));
+}
+
+////////////////////////////////////////////////////////////////
+/* LLUNA
+ * wraps all functions above, and runs the code with
+ * the standard library by default
+ */
+
+export default function lluna(code, env = lib(exec)) {
+	return exec(parse(lex(code)), env);
+}

@@ -7,4 +7,9 @@
 
 export default function lib(exec) {
 	// TODO
+	return [
+		{
+			'+': (arg, env) => exec(arg[0], env) + exec(arg[1], env)
+		}
+	];
 }
