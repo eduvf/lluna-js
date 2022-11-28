@@ -11,6 +11,8 @@
  * - [export] exec()
  */
 
+import lib from './lib.mjs';
+
 ////////////////////////////////////////////////////////////////
 /* LEX
  * the lexer takes a string of lluna coda as an argument and
@@ -125,3 +127,12 @@ function parse(tokens) {
 	// is an atom
 	return t;
 }
+
+////////////////////////////////////////////////////////////////
+/* EXEC
+ * the execute function takes an expression and an environment
+ * (by default it's the standard library) and, as you may expect,
+ * executes the expression
+ */
+
+function exec(node, env = lib(exec)) {}
