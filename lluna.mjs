@@ -141,7 +141,10 @@ function find(atom, env) {
 	for (let i = env.length - 1; i >= 0; i--) {
 		if (atom.val in env[i]) return env[i][atom.val];
 	}
-	throw `[!] Empty variable '${atom.val}' at line ${atom.line}.`;
+	console.log(
+		`[*] Empty variable '${atom.val}' at line ${atom.line}.\n    'null' will be returned instead.`
+	);
+	return null;
 }
 
 function exec(node, env) {
@@ -167,6 +170,7 @@ function exec(node, env) {
 	// else, execute each element individually (and return the last one)
 	let r = null;
 	for (let e of node) {
+		env[env.length - 1]['^'] = r; // set '^' to the last returned value
 		r = exec(e, env);
 	}
 	return r;
