@@ -125,20 +125,3 @@ function parse(tokens) {
 	// is an atom
 	return t;
 }
-
-let t3 = `(
-: f (~ n (
-	: r
-	? (< 0 n) (
-		: r (* n (f (- n 1)))
-	)(
-		: r 1
-	)
-))
-
--> 'Fact 5:' (f 5)
--> 'Fact 10:' (f 10)
-)
-`;
-
-console.log(parse(lex(t3)));
