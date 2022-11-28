@@ -13,13 +13,25 @@ const rl = readline.createInterface({
 	output: process.stdout
 });
 
-let test = `(
-	+ 5 (+ 2 3)
+let test1 = `(
+	. x (+ 5 (+ 2 3))
 	> ^
 	+ 7 7
+	> x
+)`;
+let test2 = `(
+	. a 0
+	(
+		. a 1
+		. b 2
+		> a
+		> b
+	)
+	> a
+	> b
 )`;
 
-console.log(lluna(test));
+console.log(lluna(test2));
 
 // let t1 = 'a ""1 2.5 3. (+ 1 2 (- 3))';
 // let t2 = `

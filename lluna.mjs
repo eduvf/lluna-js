@@ -169,10 +169,12 @@ function exec(node, env) {
 	}
 	// else, execute each element individually (and return the last one)
 	let r = null;
+	env.push(Object.assign({}, env[env.length - 1])); // add new scope
 	for (let e of node) {
 		env[env.length - 1]['^'] = r; // set '^' to the last returned value
 		r = exec(e, env);
 	}
+	env.pop(); // remove scope
 	return r;
 }
 
