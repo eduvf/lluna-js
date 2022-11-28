@@ -1,5 +1,13 @@
-import { read } from './read.mjs';
-import { run } from './run.mjs';
+/*
+ * file: test.mjs
+ * repo: github.com/eduvf/lluna-js
+ * auth: github.com/eduvf
+ * desc: manual tests for lluna-js
+ */
+
+// import lluna
+import read from './read.mjs';
+import exec from './exec.mjs';
 import readline from 'readline';
 const rl = readline.createInterface({
 	input: process.stdin,
@@ -126,11 +134,11 @@ let fib_test = `
 
 let r = read(fib_test);
 console.log(JSON.stringify(r));
-console.log(run(r));
+console.log(exec(r));
 
 // rl.question('> ', function (inp) {
 // 	let r = read('(' + inp + ')');
 // 	console.log(r);
-// 	console.log(run(r));
+// 	console.log(exec(r));
 // });
 rl.close();

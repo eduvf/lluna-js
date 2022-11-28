@@ -1,6 +1,6 @@
 /*
  * proj: lluna lang
- * file: read.js
+ * file: read.mjs
  * func: lex & parse
  */
 
@@ -107,7 +107,7 @@ function parse(tok) {
 	return t;
 }
 
-export function read(code) {
+export default function read(code) {
 	let tok = lex(code);
 	while (tok.length > 0 && tok[0] !== '(') {
 		tok.shift();

@@ -1,11 +1,11 @@
 /*
  * proj: lluna lang
- * file: run.js
- * func: run
+ * file: exec.mjs
+ * func: exec
  */
 
 // std lib
-import { lib } from './lib.mjs';
+import lib from './lib.mjs';
 
 function find(key, env) {
 	// search for a variable in 'env' from inner to outer scope
@@ -15,7 +15,7 @@ function find(key, env) {
 	throw `[!] Variable '${key}' not found`;
 }
 
-export function run(node, env = lib(run)) {
+export default function exec(node, env = lib(exec)) {
 	// interpret an AST within an environment
 	switch (typeof node) {
 		case 'string': // if it starts with ' it's a string
@@ -37,11 +37,11 @@ export function run(node, env = lib(run)) {
 					: node.map((x) => find(x, env));
 			}
 			// is a multi-expression
-			// run each expression within the same scope
+			// exec each expression within the same scope
 			let r = null;
 			env.push({}); // new scope
 			for (let e of node) {
-				r = run(e, env);
+				r = exec(e, env);
 			}
 			env.pop(); // end scope
 			return r;

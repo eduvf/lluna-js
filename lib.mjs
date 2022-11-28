@@ -1,22 +1,22 @@
 /*
  * proj: lluna lang
- * file: lib.js
+ * file: lib.mjs
  * func: lib
  */
 
-export function lib(run) {
+export default function lib(exec) {
 	// standard library for lluna
 
 	// helper functions:
 	function op(arg, env, bin_op, un_op = (x) => x) {
 		let r = null;
 		if (arg.length > 1) {
-			r = run(arg[0], env);
+			r = exec(arg[0], env);
 			for (let a of arg.slice(1)) {
-				r = bin_op(r, run(a, env));
+				r = bin_op(r, exec(a, env));
 			}
 		} else if (arg.length > 0) {
-			r = un_op(run(arg[0], env));
+			r = un_op(exec(arg[0], env));
 		}
 		return r;
 	}
@@ -46,7 +46,7 @@ export function lib(run) {
 			let val = null;
 			for (let i = 0; i < arg.length; i += 2) {
 				key = is_key(arg[i]);
-				val = i + 1 < arg.length ? run(arg[i + 1], env) : null;
+				val = i + 1 < arg.length ? exec(arg[i + 1], env) : null;
 				env[env.length - 1][key] = val;
 			}
 			return val;
@@ -56,7 +56,7 @@ export function lib(run) {
 			let val = null;
 			loop: for (let i = 0; i < arg.length; i += 2) {
 				key = is_key(arg[i]);
-				val = i + 1 < arg.length ? run(arg[i + 1], env) : null;
+				val = i + 1 < arg.length ? exec(arg[i + 1], env) : null;
 				// if it exists, update its value
 				for (let i = env.length - 1; i >= 0; i--) {
 					if (key in env[i]) {
@@ -76,10 +76,10 @@ export function lib(run) {
 				env.push({}); // new scope
 				// add the parameters' values to the current scope
 				for (let i in parm) {
-					env[env.length - 1][parm[i]] = i < p.length ? run(p[i], env) : null;
+					env[env.length - 1][parm[i]] = i < p.length ? exec(p[i], env) : null;
 				}
 				// execute the actual function
-				let r = run(body, env);
+				let r = exec(body, env);
 				env.pop(); // end scope
 				return r;
 			};
@@ -93,27 +93,27 @@ export function lib(run) {
 				for (let i in parm) {
 					replace_nested(parm[i], p[i], body);
 				}
-				return run(body, env);
+				return exec(body, env);
 			};
 		},
 
 		// lists
-		'#': (arg, env) => arg.map((a) => run(a, env)),
+		'#': (arg, env) => arg.map((a) => exec(a, env)),
 		'.': (arg, env) => {
 			if (arg.length > 3) throw "[!] Too many arguments for '.' function";
-			let start = arg.length >= 2 ? run(arg[1], env) : undefined;
-			let end = arg.length >= 3 ? run(arg[2], env) : undefined;
-			return arg.length >= 1 ? run(arg[0], env).slice(start, end) : null;
+			let start = arg.length >= 2 ? exec(arg[1], env) : undefined;
+			let end = arg.length >= 3 ? exec(arg[2], env) : undefined;
+			return arg.length >= 1 ? exec(arg[0], env).slice(start, end) : null;
 		},
 
 		// control flow
 		'?': (arg, env) => {
 			// alternate cond → then
 			for (let i = 0; i < arg.length; i += 2) {
-				let cond = run(arg[i], env);
+				let cond = exec(arg[i], env);
 				if (cond) {
 					if (i + 1 < arg.length) {
-						return run(arg[i + 1], env);
+						return exec(arg[i + 1], env);
 					}
 					return cond;
 				}
@@ -124,9 +124,9 @@ export function lib(run) {
 			// while loop → 1st argument is condition
 			let r = null;
 			if (arg.length > 0) {
-				while (run(arg[0], env)) {
+				while (exec(arg[0], env)) {
 					for (let a of arg.slice(1)) {
-						r = run(a, env);
+						r = exec(a, env);
 					}
 				}
 			}
@@ -135,7 +135,7 @@ export function lib(run) {
 
 		// i/o
 		'->': (arg, env) => {
-			let l = arg.map((a) => run(a, env));
+			let l = arg.map((a) => exec(a, env));
 			console.log(l.join(' '));
 			return l;
 		},
@@ -143,9 +143,9 @@ export function lib(run) {
 		// logic
 		'!': (arg, env) => {
 			if (arg.length > 1) {
-				return arg.map((a) => !run(a, env));
+				return arg.map((a) => !exec(a, env));
 			} else if (arg.length > 0) {
-				return !run(arg[0], env);
+				return !exec(arg[0], env);
 			}
 			return false;
 		},
