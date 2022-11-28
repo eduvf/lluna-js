@@ -165,7 +165,11 @@ function exec(node, env) {
 		}
 	}
 	// else, each element individually (and return the last one)
-	return node.reduce((_, x) => exec(x, env));
+	let r = null;
+	for (let e of node) {
+		r = exec(e, env);
+	}
+	return r;
 }
 
 ////////////////////////////////////////////////////////////////

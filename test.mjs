@@ -15,8 +15,7 @@ const rl = readline.createInterface({
 
 let test = `(
 	+ 5 5
-	+ 6 6
-	+ 7 7
+	()
 )`;
 
 console.log(lluna(test));
