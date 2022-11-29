@@ -50,8 +50,16 @@ let test4 = `(
 	++ z
 	> z
 )`;
+let test5 = `(
+	. ++ ($ x (. x (+ x 1)))
+	@ (. i 0) (< i 5) (
+		> i
+		++ i
+	)
+	> i
+)`;
 
-console.log(lluna(test3));
+console.log(lluna(test5));
 
 // rl.question('> ', function (inp) {
 // 	let r = read('(' + inp + ')');

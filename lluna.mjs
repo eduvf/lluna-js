@@ -147,7 +147,7 @@ function find(atom, env) {
 	return null;
 }
 
-function exec(node, env) {
+function exec(node, env, scope = true) {
 	// check for atoms (if it's not an atom, node.type will return undefined)
 	if (node.type === 's' || node.type === 'n') {
 		return node.val;
@@ -169,12 +169,12 @@ function exec(node, env) {
 	}
 	// else, execute each element individually (and return the last one)
 	let r = null;
-	env.push(Object.assign({}, env[env.length - 1])); // add new scope
+	if (scope) env.push(Object.assign({}, env[env.length - 1])); // add new scope
 	for (let e of node) {
 		env[env.length - 1]['^'] = r; // set '^' to the last returned value
 		r = exec(e, env);
 	}
-	env.pop(); // remove scope
+	if (scope) env.pop(); // remove scope
 	return r;
 }
 

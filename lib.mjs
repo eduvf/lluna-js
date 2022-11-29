@@ -93,7 +93,7 @@ export default function lib(exec) {
 		},
 		// ask
 		'?': (arg, env, line) => {
-			// alternate: cond -> then, cond -> then...
+			// (? cond then cond then ...)
 			for (let i = 0; i < arg.length; i += 2) {
 				const condition = exec(arg[i], env);
 				if (condition) {
@@ -103,7 +103,19 @@ export default function lib(exec) {
 			return null;
 		},
 		// loop
-		// '@': (arg, env, line) => {},
+		'@': (arg, env, line) => {
+			// (@ init init ... cond body)
+			env.push(Object.assign({}, env[env.length - 1])); // add new scope
+			for (let i = 0; i < arg.length - 2; i++) {
+				exec(arg[i], env, false);
+			}
+			let r = null;
+			while (arg.length > 1 ? exec(arg[arg.length - 2], env, false) : false) {
+				r = exec(arg[arg.length - 1], env, false);
+			}
+			env.pop(); // remove scope
+			return r;
+		},
 		// not
 		'!': (arg, env, line) => {
 			// execute all arguments, but negate only the last one
