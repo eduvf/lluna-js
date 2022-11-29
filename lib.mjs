@@ -15,13 +15,24 @@ export default function lib(exec) {
 		return result;
 	}
 
-	function key(atom, f, line) {
+	function key(atom, fn, line) {
 		if (!atom.type) {
-			throw `[!] Expected keyword for function '${f} at line ${line}.'`;
+			throw `[!] Expected keyword for function '${fn} at line ${line}.'`;
 		} else if (atom.type !== 'k') {
 			throw `[!] Atom of type '${atom.type}' at line ${line} should be a keyword.`;
 		}
 		return atom.val;
+	}
+
+	function deepReplace(from, key, array) {
+		for (let i in array) {
+			// if it's an atom
+			if (array[i].type) {
+				if (array[i].type === 'k' && array[i].val === from) array[i].val = key;
+				continue;
+			}
+			deepReplace(from, key, array[i]);
+		}
 	}
 
 	// main library
@@ -44,18 +55,34 @@ export default function lib(exec) {
 		// fn
 		'~': (arg, env, line) => {
 			const parm = arg.slice(0, -1).map((p) => key(p, '~', line));
-			const body = arg.slice(-1);
-			return (funcParm, funcEnv) => {
-				funcEnv.push(Object.assign({}, funcEnv[funcEnv.length - 1])); // add new scope
+			const body = arg[arg.length - 1];
+			return (fnParm, fnEnv) => {
+				fnEnv.push(Object.assign({}, fnEnv[fnEnv.length - 1])); // add new scope
 				// match parameters to arguments
 				for (let i in parm) {
-					funcEnv[funcEnv.length - 1][parm[i]] =
-						i < funcParm.length ? exec(funcParm[i], funcEnv) : null;
+					fnEnv[fnEnv.length - 1][parm[i]] =
+						i < fnParm.length ? exec(fnParm[i], fnEnv) : null;
 				}
 				// execute the body
-				const r = exec(body, funcEnv);
-				funcEnv.pop(); // remove scope
+				const r = exec(body, fnEnv);
+				fnEnv.pop(); // remove scope
 				return r;
+			};
+		},
+		// mac
+		// prettier-ignore
+		'$': (arg, env, line) => {
+			const parm = arg.slice(0, -1).map((p) => key(p, '$', line));
+			let body = arg[arg.length - 1]; // has to be variable to replace the parameters
+			return (macParm, macEnv, macLine) => {
+				if (parm.length !== macParm.length) {
+					throw `[!] Macro call doesn't match the number of arguments at line ${line}.`
+				};
+				// replace recursively each parameter within the body
+				for (let i in parm) {
+					deepReplace(parm[i], key(macParm[i], 'macro call', macLine), body);
+				}
+				return exec(body, macEnv);
 			};
 		},
 		// ask

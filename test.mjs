@@ -44,7 +44,11 @@ let test3 = `(
 )`;
 let test4 = `(
 	. f (~ x y (+ x y))
-	f 1 2
+	> (f 1 2)
+	. ++ ($ x (. x (+ x 1)))
+	. z 1
+	++ z
+	> z
 )`;
 
 console.log(lluna(test4));
