@@ -7,10 +7,16 @@
 
 export default function lib(exec) {
 	// helper functions
-	function op(arg, env, func) {
+	function op(arg, env, line, func) {
 		let result = arg.length > 0 ? exec(arg[0], env) : null;
+		const type = typeof result;
 		for (let i = 1; i < arg.length; i++) {
-			result = func(result, exec(arg[i], env));
+			const next = exec(arg[i], env);
+			if (typeof next !== type)
+				console.log(
+					`[*] Type mismatch at line ${line}.\n    Some values will be coerced!`
+				);
+			result = func(result, next);
 		}
 		return result;
 	}
@@ -107,27 +113,27 @@ export default function lib(exec) {
 			return !exec(arg[arg.length - 1], env);
 		},
 		// and
-		'&': (arg, env, line) => op(arg, env, (x, y) => x & y),
+		'&': (arg, env, line) => op(arg, env, line, (x, y) => x & y),
 		// or
-		'|': (arg, env, line) => op(arg, env, (x, y) => x | y),
+		'|': (arg, env, line) => op(arg, env, line, (x, y) => x | y),
 		// eq
-		'=': (arg, env, line) => op(arg, env, (x, y) => x === y),
+		'=': (arg, env, line) => op(arg, env, line, (x, y) => x === y),
 		// neq
-		'!=': (arg, env, line) => op(arg, env, (x, y) => x !== y),
+		'!=': (arg, env, line) => op(arg, env, line, (x, y) => x !== y),
 		// lt
-		'<': (arg, env, line) => op(arg, env, (x, y) => x < y),
+		'<': (arg, env, line) => op(arg, env, line, (x, y) => x < y),
 		// leq
-		'<=': (arg, env, line) => op(arg, env, (x, y) => x <= y),
+		'<=': (arg, env, line) => op(arg, env, line, (x, y) => x <= y),
 		// add
-		'+': (arg, env, line) => op(arg, env, (x, y) => x + y),
+		'+': (arg, env, line) => op(arg, env, line, (x, y) => x + y),
 		// sub
-		'-': (arg, env, line) => op(arg, env, (x, y) => x - y),
+		'-': (arg, env, line) => op(arg, env, line, (x, y) => x - y),
 		// mul
-		'*': (arg, env, line) => op(arg, env, (x, y) => x * y),
+		'*': (arg, env, line) => op(arg, env, line, (x, y) => x * y),
 		// div
-		'/': (arg, env, line) => op(arg, env, (x, y) => x / y),
+		'/': (arg, env, line) => op(arg, env, line, (x, y) => x / y),
 		// mod
-		'%': (arg, env, line) => op(arg, env, (x, y) => x % y),
+		'%': (arg, env, line) => op(arg, env, line, (x, y) => x % y),
 		// print
 		'>': (arg, env, line) => {
 			const array = arg.map((a) => exec(a, env));

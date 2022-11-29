@@ -32,7 +32,7 @@ let test2 = `(
 	> b
 )`;
 let test3 = `(
-	+ 1 2 3 4 5
+	+ 1 2 3 4 '5'
 	> ^ ^ ^
 	> (! (. x 1) x ) , not x -> false
 	> (! (. x 0) x ) , not x -> true
@@ -51,7 +51,7 @@ let test4 = `(
 	> z
 )`;
 
-console.log(lluna(test4));
+console.log(lluna(test3));
 
 // rl.question('> ', function (inp) {
 // 	let r = read('(' + inp + ')');
