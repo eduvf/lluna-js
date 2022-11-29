@@ -34,6 +34,8 @@ let test2 = `(
 let test3 = `(
 	+ 1 2 3 4 5
 	> ^ ^ ^
+	> (! (. x 1) x ) , not x -> false
+	> (! (. x 0) x ) , not x -> true
 )`;
 
 console.log(lluna(test3));

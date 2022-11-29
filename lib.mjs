@@ -53,6 +53,25 @@ export default function lib(exec) {
 		},
 		// loop
 		// '@': (arg, env, line) => {},
+		// not
+		'!': (arg, env, line) => {
+			for (let i = 0; i < arg.length - 1; i++) {
+				exec(arg[i], env);
+			}
+			return !exec(arg[arg.length - 1], env);
+		},
+		// and
+		'&': (arg, env, line) => op(arg, env, (x, y) => x & y),
+		// or
+		'|': (arg, env, line) => op(arg, env, (x, y) => x | y),
+		// eq
+		'=': (arg, env, line) => op(arg, env, (x, y) => x === y),
+		// neq
+		'!=': (arg, env, line) => op(arg, env, (x, y) => x !== y),
+		// lt
+		'<': (arg, env, line) => op(arg, env, (x, y) => x < y),
+		// leq
+		'<=': (arg, env, line) => op(arg, env, (x, y) => x <= y),
 		// add
 		'+': (arg, env, line) => op(arg, env, (x, y) => x + y),
 		// sub
