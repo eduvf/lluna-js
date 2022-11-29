@@ -36,7 +36,7 @@ export default function lib(exec) {
 					return ret;
 				}
 			}
-			env[env.length - 1][arg[0].val] = ret;
+			env[env.length - 1][k] = ret;
 			return ret;
 		},
 		// fn
