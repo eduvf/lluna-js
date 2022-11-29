@@ -1,3 +1,4 @@
+// @ts-nocheck
 /*
  * file: test.mjs
  * repo: github.com/eduvf/lluna-js
@@ -30,8 +31,12 @@ let test2 = `(
 	> a
 	> b
 )`;
+let test3 = `(
+	+ 1 2 3 4 5
+	> ^ ^ ^
+)`;
 
-console.log(lluna(test2));
+console.log(lluna(test3));
 
 // let t1 = 'a ""1 2.5 3. (+ 1 2 (- 3))';
 // let t2 = `
