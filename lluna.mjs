@@ -7,8 +7,8 @@
  * Structure of this file:
  * - lex()
  * - parse()
- * - [export] read() -> combines lex() and parse()
- * - [export] exec()
+ * - exec()
+ * - [export] lluna()
  */
 
 import lib from './lib.mjs';
