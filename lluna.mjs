@@ -31,7 +31,7 @@ function lex(s) {
 		let c = s[i]; // current character
 		if (c === ',') {
 			// comment
-			while (i < s.length && s[i] !== '\n') i++;
+			while (i + 1 < s.length && s[i + 1] !== '\n') i++;
 			line++;
 		} else if (';\n()'.includes(c)) {
 			// special characters
