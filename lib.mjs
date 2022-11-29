@@ -29,22 +29,40 @@ export default function lib(exec) {
 		// var
 		'.': (arg, env, line) => {
 			const k = key(arg[0], '.', line);
-			let ret = exec(arg[1], env);
+			const r = exec(arg[1], env);
 			for (let i = env.length - 1; i >= 0; i--) {
+				// if the variable exists, update its value
 				if (k in env[i]) {
-					env[i][k] = ret;
-					return ret;
+					env[i][k] = r;
+					return r;
 				}
 			}
-			env[env.length - 1][k] = ret;
-			return ret;
+			// otherwise, create the variable in the current scope
+			env[env.length - 1][k] = r;
+			return r;
 		},
 		// fn
-		// '~': (arg, env, line) => {},
+		'~': (arg, env, line) => {
+			const parm = arg.slice(0, -1).map((p) => key(p, '~', line));
+			const body = arg.slice(-1);
+			return (funcParm, funcEnv) => {
+				funcEnv.push(Object.assign({}, funcEnv[funcEnv.length - 1])); // add new scope
+				// match parameters to arguments
+				for (let i in parm) {
+					funcEnv[funcEnv.length - 1][parm[i]] =
+						i < funcParm.length ? exec(funcParm[i], funcEnv) : null;
+				}
+				// execute the body
+				const r = exec(body, funcEnv);
+				funcEnv.pop(); // remove scope
+				return r;
+			};
+		},
 		// ask
 		'?': (arg, env, line) => {
+			// alternate: cond -> then, cond -> then...
 			for (let i = 0; i < arg.length; i += 2) {
-				let condition = exec(arg[i], env);
+				const condition = exec(arg[i], env);
 				if (condition) {
 					return i + 1 < arg.length ? exec(arg[i + 1], env) : condition;
 				}
@@ -55,6 +73,7 @@ export default function lib(exec) {
 		// '@': (arg, env, line) => {},
 		// not
 		'!': (arg, env, line) => {
+			// execute all arguments, but negate only the last one
 			for (let i = 0; i < arg.length - 1; i++) {
 				exec(arg[i], env);
 			}
@@ -84,7 +103,7 @@ export default function lib(exec) {
 		'%': (arg, env, line) => op(arg, env, (x, y) => x % y),
 		// print
 		'>': (arg, env, line) => {
-			let array = arg.map((a) => exec(a, env));
+			const array = arg.map((a) => exec(a, env));
 			console.log('> ' + array.join(' '));
 			return array;
 		}
