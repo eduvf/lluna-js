@@ -135,7 +135,7 @@ function parse(tokens) {
  * executes the expression
  */
 
-// Helper to find variables within an env
+// helper to find variables within an env
 function find(atom, env) {
 	// search from inside out
 	for (let i = env.length - 1; i >= 0; i--) {
@@ -164,7 +164,7 @@ function exec(node, env) {
 		let func = find(node[0], env);
 		if (func instanceof Function) {
 			// is a function expression
-			return func(node.slice(1), env);
+			return func(node.slice(1), env, node[0].line);
 		}
 	}
 	// else, execute each element individually (and return the last one)
