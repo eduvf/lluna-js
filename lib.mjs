@@ -151,6 +151,14 @@ export default function lib(exec) {
 			const array = arg.map((a) => exec(a, env));
 			console.log('> ' + array.join(' '));
 			return array;
+		},
+		// str
+		str: (arg, env, line) => {
+			return String(arg.length > 1 ? exec(arg, env) : exec(arg[0], env));
+		},
+		// num
+		num: (arg, env, line) => {
+			return Number(arg.length > 1 ? exec(arg, env) : exec(arg[0], env));
 		}
 	};
 

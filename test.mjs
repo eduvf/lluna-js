@@ -56,7 +56,11 @@ let test5 = `(
 		> i
 		++ i
 	)
-	> i
+	@ (. s '') (. i 0) (< i 10) (
+		. s (+ s (str i))
+		++ i
+		? (= i 10) (> s)
+	)
 )`;
 
 console.log(lluna(test5));
