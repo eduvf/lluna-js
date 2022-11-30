@@ -39,7 +39,7 @@ let test3 = `(
 	? (= 0 1) (
 		> 'oops'
 	) (< 0 1) (
-		> 'yeah'
+		> "yeah"
 	)
 )`;
 let test4 = `(
@@ -63,7 +63,7 @@ let test5 = `(
 	)
 )`;
 
-console.log(lluna(test5));
+console.log(lluna(test3));
 
 // rl.question('> ', function (inp) {
 // 	let r = read('(' + inp + ')');

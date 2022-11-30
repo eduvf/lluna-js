@@ -40,7 +40,7 @@ function lex(s) {
 				line++;
 			}
 			tokens.push(c);
-		} else if (c === "'") {
+		} else if (`'"`.includes(c)) {
 			// string
 			let from = i;
 			// advance until a non-escaped quote is found
