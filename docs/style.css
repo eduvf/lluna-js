@@ -1,0 +1,33 @@
+:root {
+    --purple-dark: #201;
+    --purple-mid: #312;
+    --purple-light: #423;
+    --purple-lighter: #867;
+    --orange: #f93;
+    --yellow: #ff8;
+
+    /* Overwrite water.css */
+    --background-body: var(--purple-mid);
+    --background: var(--purple-dark);
+    --button-base: var(--purple-dark);
+    --button-hover: var(--purple-light);
+    --form-text: var(--yellow);
+    --text-bright: var(--yellow);
+    --code: var(--yellow);
+    --links: var(--orange);
+    --focus: var(--orange);
+    --selection: var(--orange);
+    --border: var(--orange);
+}
+
+.editor {
+    background-color: var(--purple-dark);
+    border-radius: 1rem;
+    color: var(--yellow);
+    font-family: 'Source Code Pro', monospace;
+    height: 20rem;
+    margin-bottom: 1rem;
+    padding: 1rem;
+    resize: vertical;
+    tab-size: 4;
+}
