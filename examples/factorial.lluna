@@ -1,14 +1,13 @@
 (
 , calculate recursively the factorial of a number
-: f (~ n (
-	: r
+. f (~ n (
 	? (< 0 n) (
-		: r (* n (f (- n 1)))
+		* n (f (- n 1))
 	)(
-		: r 1
+		1
 	)
 ))
--> (f 5)
--> (f 10)
--> (f 20)
+> (f 5)
+> (f 10)
+> (f 20)
 )

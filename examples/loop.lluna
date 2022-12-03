@@ -1,9 +1,8 @@
 (
-: ++ (^ x (: x (+ x 1))) , create a macro to increment a variable
+. ++ ($ x (. x (+ x 1))) , create a macro to increment a variable
 (
-	: n 0
-	@ (<= n 10) (
-		-> n
+	@ (. n 0) (<= n 10) (
+		> n
 		++ n
 	)
 )

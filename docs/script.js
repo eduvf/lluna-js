@@ -1,8 +1,8 @@
 import { CodeJar } from '//unpkg.com/codejar';
 
-import { read } from './lluna/read.js';
-import { lib } from './lluna/lib.js';
-import { run } from './lluna/run.js';
+import lib from './lluna/lib.mjs';
+import { exec } from './lluna/lluna.mjs';
+import lluna from './lluna/lluna.mjs';
 
 const select = document.getElementById('select');
 const editor = document.querySelector('.editor');
@@ -71,15 +71,15 @@ clearOutput();
 // Run code
 ////////////////////////////////////////////////////////////////////////////////
 
-// Modify (->) to print to output
-let env = lib(run);
-env[0]['->'] = (arg, env) => {
-	let l = arg.map((a) => run(a, env));
+// Modify print (>) to print to output
+let env = lib(exec);
+env[0]['>'] = (arg, env) => {
+	let l = arg.map((a) => exec(a, env));
 	// console.log(l.join(' '));
 	output.innerText += '> ' + l.join(' ') + '\n';
 	return l;
 };
 window.runCode = () => {
 	output.innerText += '\n';
-	run(read(jar.toString()), env);
+	lluna(jar.toString(), env);
 };

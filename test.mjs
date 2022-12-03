@@ -63,7 +63,7 @@ let test5 = `(
 	)
 )`;
 
-console.log(lluna(test3));
+console.log(lluna(test5));
 
 // rl.question('> ', function (inp) {
 // 	let r = read('(' + inp + ')');
