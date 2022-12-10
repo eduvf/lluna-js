@@ -1,55 +1,50 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta http-equiv="X-UA-Compatible" content="IE=edge" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>&gt;_ lluna js playground</title>
-		<link
-			rel="stylesheet"
-			href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
-		<link rel="stylesheet" href="./style.css" />
-	</head>
-	<body>
-		<header>
-			<img
-				src="https://raw.githubusercontent.com/eduvf/lluna-js/main/logo.svg"
-				width="200"
-				style="float: right" />
-			<h1>
-				&gt;_ lluna js playground
-				<sub style="font-size: small">&beta; version</sub>
-			</h1>
-			<a href="https://github.com/eduvf/lluna-js"
-				><sup>[go to project page]</sup></a
-			>
-			<br />
-			<a href="https://eduvf.github.io/lluna"
-				><sup>[go to documentation]</sup></a
-			>
-		</header>
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>lluna js playground</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@xz/fonts@1/serve/mononoki.min.css" />
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/water.css@2/out/water.css" />
+    <link rel="stylesheet" href="./style.css" />
+  </head>
+  <body>
+    <header>
+      <a href="https://eduvf.github.io/lluna">
+        <img
+          src="https://raw.githubusercontent.com/eduvf/lluna-js/main/logo.svg"
+          width="150"
+          style="display: block; margin: 0 auto"
+      /></a>
+      <h2><code>&gt;_ </code> &nbsp; lluna-js playground</h2>
+      <p>
+        <sup>
+          <i>&beta;</i> version, for + info go to the <a href="https://github.com/eduvf/lluna-js">project page</a> or
+          take a look at the <a href="https://eduvf.github.io/lluna/docs">lluna documentation</a>.
+        </sup>
+      </p>
+    </header>
 
-		<hr />
+    <hr />
 
-		<div class="editor"></div>
+    <div class="editor"></div>
 
-		<div style="display: flex; justify-content: center">
-			<select onchange="window.loadExample()" id="select">
-				<option value="" disabled selected>examples:</option>
-				<option value="hello">hello, moon!</option>
-				<option value="factorial">factorial</option>
-				<option value="fibonacci">fibonacci</option>
-				<option value="loop">loop 0 to 10</option>
-			</select>
-			<button onclick="window.clearEditor()">clear code</button>
-			<button onclick="window.clearOutput()">clear output</button>
-			<button onclick="window.runCode()">run</button>
-		</div>
+    <div style="display: flex; justify-content: center; flex-wrap: wrap">
+      <select onchange="window.loadExample()" id="select">
+        <option value="" disabled selected>examples:</option>
+        <option value="hello">hello, moon!</option>
+        <option value="factorial">factorial</option>
+        <option value="fibonacci">fibonacci</option>
+        <option value="loop">loop 0 to 10</option>
+      </select>
+      <button onclick="window.clearEditor()">clear code</button>
+      <button onclick="window.clearOutput()">clear output</button>
+      <button onclick="window.runCode()">run</button>
+    </div>
 
-		<pre>
-            <code id="output"></code>
-        </pre>
+    <pre><code id="output"></code></pre>
 
-		<script src="./script.js" type="module"></script>
-	</body>
+    <script src="./script.js" type="module"></script>
+  </body>
 </html>
