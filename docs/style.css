@@ -24,7 +24,7 @@
   background-color: var(--purple-dark);
   border-radius: 1rem;
   color: var(--yellow);
-  font-family: "mononoki", "Source Code Pro", monospace;
+  font-family: 'IBM Plex Mono', 'Source Code Pro', monospace;
   height: 15rem;
   margin-bottom: 1rem;
   padding: 1rem;
