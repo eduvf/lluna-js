@@ -149,13 +149,21 @@ function parse(tok) {
 		tok.shift(); // remove ')'
 		return expr;
 	} else if (t.type === '[') {
-		// TODO
-		/*
-		 *
-		 *
-		 *
-		 *
-		 */
+		// list
+		let list = [{ type: 'k', val: 'make_table', line: t.line }];
+		while (tok.length > 0 && tok[0].type !== ']') {
+			if (tok[0].type === ';') {
+				tok.shift(); // ignore new lines
+			} else {
+				list.push(parse(tok));
+			}
+		}
+
+		if (tok.length === 0) throw `[!] Unclosed table starting at line ${t.line}.`;
+		if (tok[0].type !== ']') throw `[!] Expected closing square bracket around line ${tok[0].line}.`;
+
+		tok.shift(); // remove ']'
+		return list;
 	} else if (t.type === ')') {
 		throw `[!] Unexpected closing parenthesis at line ${t.line}.`;
 	} else if (t.type === ']') {
@@ -164,6 +172,10 @@ function parse(tok) {
 	// atom
 	return t;
 }
+
+////////////////////////////////////////////////////////////////
+
+// TODO
 
 ////////////////////////////////////////////////////////////////
 /* EXEC
